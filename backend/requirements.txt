@@ -9,6 +9,7 @@ redis==5.0.1
 celery==5.3.4
 Pillow==11.0.0
 cloudinary==1.36.0
+django-cloudinary-storage==0.3.0
 requests==2.31.0
 Faker==21.0.0
 django-filter==23.5
