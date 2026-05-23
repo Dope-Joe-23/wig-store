@@ -177,6 +177,7 @@ CORS_EXPOSE_HEADERS = [
     'content-type',
     'x-csrftoken',
 ]
+CORS_PREFLIGHT_MAX_AGE = 600
 CORS_PREFLIGHT_ALLOW_ALL = True
 
 # Celery Configuration
