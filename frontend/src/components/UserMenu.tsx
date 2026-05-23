@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User } from '@types/index'
+import { User } from '@/types/index'
 import { UserAvatar } from './UserAvatar'
 import { ProfileIcon, OrdersIcon, WishlistIcon, SettingsIcon, LogoutIcon, AdminIcon } from './Icons'
 

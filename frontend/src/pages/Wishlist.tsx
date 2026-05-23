@@ -4,7 +4,7 @@ import { useAuthStore } from '@stores/authStore'
 import { useWishlistStore } from '@stores/wishlistStore'
 import { wishlistService } from '@services/wishlist'
 import { productService } from '@services/products'
-import { Product } from '@types/index'
+import { Product } from '@/types/index'
 import ProductCard from '@components/products/ProductCard'
 
 export function WishlistPage() {

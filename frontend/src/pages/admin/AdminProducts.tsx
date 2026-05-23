@@ -16,14 +16,15 @@ interface Product {
   is_trending: boolean
   is_new: boolean
   category: any
-  wig_type: string
-  texture: string
+  wig_type: 'human_hair' | 'synthetic' | 'blend'
+  texture: 'straight' | 'wavy' | 'curly' | 'coily' | 'kinky'
   color: string
   length: string
   cap_size: string
   seo_title?: string
   seo_description?: string
   seo_keywords?: string
+  primary_image?: { url: string; alt_text?: string }
 }
 
 interface EditingState {
@@ -272,8 +273,8 @@ export function AdminProductsPage() {
       const updateData = {
         name: editing.product.name,
         description: editing.product.description,
-        price: editing.product.price,
-        sale_price: editing.product.sale_price || null,
+        price: parseFloat(editing.product.price),
+        sale_price: editing.product.sale_price ? parseFloat(editing.product.sale_price) : undefined,
         wig_type: editing.product.wig_type,
         texture: editing.product.texture,
         color: editing.product.color,

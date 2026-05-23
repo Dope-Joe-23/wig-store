@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { CartItem, Product, ProductVariant } from '@types/index'
+import type { CartItem, Product, ProductVariant } from '@/types/index'
 
 interface SimpleCartItem {
   id: number
@@ -28,20 +28,20 @@ const generateCartId = (productId: number, variantId?: number) => {
   return `${productId}-${variantId || 'base'}`
 }
 
-export const useCartStore = create<CartStore>(
+export const useCartStore = create<CartStore>()((
   persist(
-    (set, get) => ({
+    (set: any, get: any) => ({
       items: [],
       simpleItems: [],
 
       addItem: (product: Product, quantity: number, variant?: ProductVariant) => {
-        set((state) => {
+        set((state: any) => {
           const id = generateCartId(product.id, variant?.id)
-          const existingItem = state.items.find((item) => item.id === id)
+          const existingItem = state.items.find((item: any) => item.id === id)
 
           if (existingItem) {
             return {
-              items: state.items.map((item) =>
+              items: state.items.map((item: any) =>
                 item.id === id
                   ? { ...item, quantity: item.quantity + quantity }
                   : item
@@ -67,12 +67,12 @@ export const useCartStore = create<CartStore>(
       },
 
       addToCart: (item: SimpleCartItem) => {
-        set((state) => {
-          const existingItem = state.simpleItems.find((i) => i.id === item.id)
+        set((state: any) => {
+          const existingItem = state.simpleItems.find((i: any) => i.id === item.id)
 
           if (existingItem) {
             return {
-              simpleItems: state.simpleItems.map((i) =>
+              simpleItems: state.simpleItems.map((i: any) =>
                 i.id === item.id
                   ? { ...i, quantity: i.quantity + item.quantity }
                   : i
@@ -87,45 +87,45 @@ export const useCartStore = create<CartStore>(
       },
 
       removeItem: (id: string | number) => {
-        set((state) => ({
-          items: state.items.filter((item) => item.id !== id),
+        set((state: any) => ({
+          items: state.items.filter((item: any) => item.id !== id),
         }))
       },
 
       removeFromCart: (id: number) => {
-        set((state) => ({
-          simpleItems: state.simpleItems.filter((item) => item.id !== id),
+        set((state: any) => ({
+          simpleItems: state.simpleItems.filter((item: any) => item.id !== id),
         }))
       },
 
       updateQuantity: (id: string | number, quantity: number) => {
         if (quantity <= 0) {
-          get().removeFromCart(Number(id))
+          (get() as any).removeFromCart(Number(id))
           return
         }
 
-        set((state) => ({
-          simpleItems: state.simpleItems.map((item) =>
+        set((state: any) => ({
+          simpleItems: state.simpleItems.map((item: any) =>
             item.id === Number(id) ? { ...item, quantity } : item
           ),
         }))
       },
 
-      clearCart: () => set({ items: [], simpleItems: [] }),
+      clearCart: () => set({ items: [], simpleItems: [] } as any),
 
       getTotalPrice: () => {
-        return get().simpleItems.reduce((total, item) => total + item.price * item.quantity, 0)
+        return (get() as any).simpleItems.reduce((total: number, item: any) => total + item.price * item.quantity, 0)
       },
 
       getTotalItems: () => {
-        return get().simpleItems.reduce((total, item) => total + item.quantity, 0)
+        return (get() as any).simpleItems.reduce((total: number, item: any) => total + item.quantity, 0)
       },
     }),
     {
       name: 'cart-store',
-      partialize: (state) => ({
+      partialize: (state: any) => ({
         simpleItems: state.simpleItems,
       }),
     }
-  )
-)
+  ) as any
+))

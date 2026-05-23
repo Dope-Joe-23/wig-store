@@ -6,7 +6,7 @@ import { CloseIcon } from '@components/Icons'
 interface Order {
   id: number
   order_number: string
-  user: { id: number; email: string; first_name: string; last_name: string }
+  user: { id: number; username: string; email: string; first_name: string; last_name: string }
   status: string
   payment_status: string
   total: string

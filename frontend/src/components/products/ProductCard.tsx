@@ -1,4 +1,4 @@
-import { Product } from '@types/index'
+import { Product } from '@/types/index'
 import { Link } from 'react-router-dom'
 import { formatCurrency, getImageUrl } from '@utils/helpers'
 import { useWishlistStore } from '@stores/wishlistStore'

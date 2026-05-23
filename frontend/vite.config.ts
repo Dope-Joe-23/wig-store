@@ -23,7 +23,7 @@ export default defineConfig({
     open: true,
   },
   build: {
-    target: 'ES2020',
+    target: 'esnext',
     outDir: 'dist',
     sourcemap: true,
   },

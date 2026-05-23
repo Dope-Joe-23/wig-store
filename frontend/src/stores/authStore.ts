@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { User } from '@types/index'
+import type { User } from '@/types/index'
 
 interface AuthStore {
   user: User | null
@@ -14,9 +14,9 @@ interface AuthStore {
   logout: () => void
 }
 
-export const useAuthStore = create<AuthStore>(
+export const useAuthStore = create<AuthStore>()((
   persist(
-    (set) => ({
+    (set: any) => ({
       user: null,
       isAuthenticated: false,
       isLoading: false,
@@ -56,10 +56,10 @@ export const useAuthStore = create<AuthStore>(
     }),
     {
       name: 'auth-store',
-      partialize: (state) => ({
+      partialize: (state: any) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
     }
-  )
-)
+  ) as any
+))

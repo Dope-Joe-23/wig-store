@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { orderService } from '@services/orders'
-import { Order } from '@types/index'
+import { Order } from '@/types/index'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
 import { useCartStore } from '@stores/cartStore'
