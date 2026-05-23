@@ -2,11 +2,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
 from decouple import config
 
 ADMIN_URL = config('ADMIN_URL', default='portal')
 
+
+def health_check(request):
+    return JsonResponse({'status': 'healthy'}, status=200)
+
 urlpatterns = [
+    path('api/v1/health/', health_check, name='health_check'),
     path(f'{ADMIN_URL}/', admin.site.urls),
     path('api/v1/dashboard/', include('apps.dashboard.urls', namespace='dashboard')),
     path('api/payments/', include('apps.payments.urls', namespace='payments-public')),
