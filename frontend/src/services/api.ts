@@ -8,9 +8,15 @@ class APIClient {
     reject: (reason?: unknown) => void
   }> = []
 
+  private normalizeBaseURL(url: string): string {
+    const cleaned = url.replace(/\/+$/, '')
+    return cleaned.endsWith('/api/v1') ? cleaned : `${cleaned}/api/v1`
+  }
+
   constructor() {
+    const rawBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
     this.client = axios.create({
-      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+      baseURL: this.normalizeBaseURL(rawBaseURL),
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
@@ -65,8 +71,11 @@ class APIClient {
         }
 
         try {
+          const baseURL = this.normalizeBaseURL(
+            import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
+          )
           const { data } = await axios.post(
-            `${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/auth/token/refresh/`,
+            `${baseURL}/auth/token/refresh/`,
             { refresh: refreshToken }
           )
 
