@@ -45,17 +45,6 @@ export default function VideosSection() {
     ? videos
     : videos.filter((v) => v.category === activeCategory)
 
-  const getEmbedUrl = (url: string | null | undefined) => {
-    if (!url) return null
-    // YouTube
-    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)
-    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`
-    // Vimeo
-    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
-    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`
-    return url
-  }
-
   return (
     <section ref={ref} className="py-24 bg-gradient-to-b from-cream to-white overflow-hidden">
       <div className="container-base">
@@ -203,16 +192,41 @@ export default function VideosSection() {
               </button>
 
               {/* Video Player */}
-              <div className="aspect-video">
-                {activeVideo.video_url_display ? (
-                  <iframe
-                    src={getEmbedUrl(activeVideo.video_url_display) || activeVideo.video_url_display}
-                    title={activeVideo.title}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
+              <div className="aspect-video bg-gray-900">
+                {activeVideo.video_url_display ? (() => {
+                  const url = activeVideo.video_url_display!
+                  const isYouTube = /(?:youtube\.com\/watch\?v=|youtu\.be\/)/.test(url)
+                  const isVimeo = /vimeo\.com\/\d+/.test(url)
+
+                  if (isYouTube || isVimeo) {
+                    const embedUrl = isYouTube
+                      ? `https://www.youtube.com/embed/${url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)![1]}`
+                      : `https://player.vimeo.com/video/${url.match(/vimeo\.com\/(\d+)/)![1]}`
+                    return (
+                      <iframe
+                        src={embedUrl}
+                        title={activeVideo.title}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    )
+                  }
+
+                  // Direct video file (uploaded to Cloudinary or other CDN)
+                  return (
+                    <video
+                      src={url}
+                      title={activeVideo.title}
+                      className="w-full h-full"
+                      controls
+                      autoPlay
+                      playsInline
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  )
+                })() : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white">
                     <p className="text-lg">Video not available</p>
                   </div>

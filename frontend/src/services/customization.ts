@@ -99,9 +99,13 @@ export const heroSlidesApi = {
   list: () => apiClient.get('/customization/hero-slides/'),
   get: (id: number) => apiClient.get(`/customization/hero-slides/${id}/`),
   create: (data: FormData) =>
-    apiClient.post('/customization/hero-slides/', data),
+    apiClient.post('/customization/hero-slides/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   update: (id: number, data: FormData) =>
-    apiClient.patch(`/customization/hero-slides/${id}/`, data),
+    apiClient.patch(`/customization/hero-slides/${id}/`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   delete: (id: number) => apiClient.delete(`/customization/hero-slides/${id}/`),
   reorder: (items: { id: number; order: number }[]) =>
     apiClient.post('/customization/hero-slides/reorder/', { items }),
@@ -112,9 +116,13 @@ export const featuredItemsApi = {
   list: () => apiClient.get('/customization/featured-items/'),
   get: (id: number) => apiClient.get(`/customization/featured-items/${id}/`),
   create: (data: FormData) =>
-    apiClient.post('/customization/featured-items/', data),
+    apiClient.post('/customization/featured-items/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   update: (id: number, data: FormData) =>
-    apiClient.patch(`/customization/featured-items/${id}/`, data),
+    apiClient.patch(`/customization/featured-items/${id}/`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   delete: (id: number) => apiClient.delete(`/customization/featured-items/${id}/`),
   reorder: (items: { id: number; order: number }[]) =>
     apiClient.post('/customization/featured-items/reorder/', { items }),
@@ -125,9 +133,13 @@ export const testimonialsApi = {
   list: () => apiClient.get('/customization/testimonials/'),
   get: (id: number) => apiClient.get(`/customization/testimonials/${id}/`),
   create: (data: FormData) =>
-    apiClient.post('/customization/testimonials/', data),
+    apiClient.post('/customization/testimonials/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   update: (id: number, data: FormData) =>
-    apiClient.patch(`/customization/testimonials/${id}/`, data),
+    apiClient.patch(`/customization/testimonials/${id}/`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   delete: (id: number) => apiClient.delete(`/customization/testimonials/${id}/`),
   reorder: (items: { id: number; order: number }[]) =>
     apiClient.post('/customization/testimonials/reorder/', { items }),
@@ -138,9 +150,13 @@ export const aboutPageApi = {
   list: () => apiClient.get('/customization/about/'),
   get: (id: number) => apiClient.get(`/customization/about/${id}/`),
   create: (data: FormData) =>
-    apiClient.post('/customization/about/', data),
+    apiClient.post('/customization/about/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   update: (id: number, data: FormData) =>
-    apiClient.patch(`/customization/about/${id}/`, data),
+    apiClient.patch(`/customization/about/${id}/`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   delete: (id: number) => apiClient.delete(`/customization/about/${id}/`),
 }
 
@@ -149,8 +165,12 @@ export const contactPageApi = {
   list: () => apiClient.get('/customization/contact/'),
   get: (id: number) => apiClient.get(`/customization/contact/${id}/`),
   create: (data: FormData) =>
-    apiClient.post('/customization/contact/', data),
+    apiClient.post('/customization/contact/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   update: (id: number, data: FormData) =>
-    apiClient.patch(`/customization/contact/${id}/`, data),
+    apiClient.patch(`/customization/contact/${id}/`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   delete: (id: number) => apiClient.delete(`/customization/contact/${id}/`),
 }
