@@ -9,7 +9,7 @@ import {
 } from '@services/customization'
 import { blogApi, type BlogPost } from '@services/blog'
 import { videosApi, type VideoContent } from '@services/videos'
-import { getImageUrl } from '@utils/helpers'
+import { getImageUrl, getApiErrorMessage } from '@utils/helpers'
 import { productService } from '@services/products'
 import type { Product } from '../../types'
 import { CloseIcon } from '@components/Icons'
@@ -78,7 +78,7 @@ function HeroSlideForm({ slide, onSaved, onCancel }: { slide?: HeroSlide | null;
       setState({ saving: false, error: null, success: 'Saved successfully!' })
       setTimeout(onSaved, 1000)
     } catch (err: any) {
-      setState({ saving: false, error: err.response?.data?.detail || err.message || 'Failed to save', success: null })
+      setState({ saving: false, error: getApiErrorMessage(err), success: null })
     }
   }
 
@@ -254,7 +254,7 @@ function TestimonialForm({ testimonial, onSaved, onCancel }: { testimonial?: Tes
       setState({ saving: false, error: null, success: 'Saved successfully!' })
       setTimeout(onSaved, 1000)
     } catch (err: any) {
-      setState({ saving: false, error: err.response?.data?.detail || err.message || 'Failed to save', success: null })
+      setState({ saving: false, error: getApiErrorMessage(err), success: null })
     }
   }
 
@@ -460,7 +460,7 @@ function AboutPageForm({ onSaved }: { onSaved: () => void }) {
         onSaved()
       }, 1000)
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to save')
+      setError(getApiErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -683,7 +683,7 @@ function ContactPageForm({ onSaved }: { onSaved: () => void }) {
         onSaved()
       }, 1000)
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to save')
+      setError(getApiErrorMessage(err))
     } finally {
       setSaving(false)
     }
@@ -860,7 +860,7 @@ function BlogForm({ post, onSaved, onCancel }: { post?: BlogPost | null; onSaved
       setState({ saving: false, error: null, success: 'Saved successfully!' })
       setTimeout(onSaved, 1000)
     } catch (err: any) {
-      setState({ saving: false, error: err.response?.data?.detail || err.message || 'Failed to save', success: null })
+      setState({ saving: false, error: getApiErrorMessage(err), success: null })
     }
   }
 
@@ -1033,7 +1033,7 @@ function VideoForm({ video, onSaved, onCancel }: { video?: VideoContent | null; 
       setState({ saving: false, error: null, success: 'Saved successfully!' })
       setTimeout(onSaved, 1000)
     } catch (err: any) {
-      setState({ saving: false, error: err.response?.data?.detail || err.message || 'Failed to save', success: null })
+      setState({ saving: false, error: getApiErrorMessage(err), success: null })
     }
   }
 

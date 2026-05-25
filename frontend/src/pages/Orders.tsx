@@ -4,7 +4,7 @@ import { Order } from '@/types/index'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
 import { useCartStore } from '@stores/cartStore'
-import { formatCurrency, getImageUrl } from '@utils/helpers'
+import { formatCurrency, getImageUrl, getApiErrorMessage } from '@utils/helpers'
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -110,7 +110,7 @@ export function OrdersPage() {
       setNextPage(data.next || null)
     } catch (err: any) {
       if (reset) {
-        setError(err.response?.data?.detail || err.message || 'Failed to load orders')
+        setError(getApiErrorMessage(err, 'Failed to load orders'))
       }
     } finally {
       setLoading(false)

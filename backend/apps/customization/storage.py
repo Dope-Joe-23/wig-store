@@ -18,9 +18,15 @@ class SmartCloudinaryStorage(MediaCloudinaryStorage):
 
     def _get_resource_type(self, name):
         ext = os.path.splitext(name)[1].lower().lstrip('.')
+        if not ext:
+            # No extension — default to IMAGE since most existing data is images
+            return RESOURCE_TYPES['IMAGE']
         if ext in IMAGE_EXTENSIONS:
             return RESOURCE_TYPES['IMAGE']
-        elif ext in VIDEO_EXTENSIONS:
+        if ext in VIDEO_EXTENSIONS:
             return RESOURCE_TYPES['VIDEO']
-        else:
+        # PDFs, DOCs, ZIPs, etc. — known raw extensions
+        if ext in RAW_EXTENSIONS:
             return RESOURCE_TYPES['RAW']
+        # Unknown extension — assume image as the safest default
+        return RESOURCE_TYPES['IMAGE']

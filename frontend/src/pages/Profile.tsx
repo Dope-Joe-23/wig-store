@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuthStore } from '@stores/authStore'
 import { authService } from '@services/auth'
 import { useNavigate } from 'react-router-dom'
-import { getImageUrl } from '@utils/helpers'
+import { getImageUrl, getApiErrorMessage } from '@utils/helpers'
 
 export function ProfilePage() {
   const user = useAuthStore((state) => state.user)
@@ -50,7 +50,7 @@ export function ProfilePage() {
       setSuccess('Profile updated successfully!')
       setEditing(false)
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to update profile')
+      setError(getApiErrorMessage(err, 'Failed to update profile'))
     } finally {
       setSaving(false)
     }
