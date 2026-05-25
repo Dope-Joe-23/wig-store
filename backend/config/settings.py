@@ -259,6 +259,12 @@ PAYSTACK_WEBHOOK_SECRET = config('PAYSTACK_WEBHOOK_SECRET', default='')
 FRONTEND_BASE_URL = config('FRONTEND_BASE_URL', default='http://localhost:5173')
 PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default=f'{FRONTEND_BASE_URL}/payment/success')
 
+# File Upload
+# DATA_UPLOAD_MAX_MEMORY_SIZE limits the entire request body (including multipart overhead).
+# For video uploads, the multipart overhead can push the total request size above the raw file size.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB — increased from 10 MB to accommodate video uploads with multipart overhead
+FILE_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20 MB — stream files over 20 MB to disk instead of keeping in memory
+
 # Security
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = not DEBUG

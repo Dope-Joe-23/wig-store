@@ -35,11 +35,25 @@ class APIClient {
       (error) => Promise.reject(error)
     )
 
-    // Response interceptor — try token refresh on 401
+    // Response interceptor — try token refresh on 401, retry on network error
     this.client.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
         const originalRequest = error.config as any
+
+        // Network error — retry once after a short delay (GET/HEAD/OPTIONS only to avoid duplicate mutations)
+        if (!error.response && !originalRequest._retryNetwork) {
+          const method = (originalRequest.method || 'get').toLowerCase()
+          if (['get', 'head', 'options'].includes(method)) {
+            originalRequest._retryNetwork = true
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            try {
+              return await this.client(originalRequest)
+            } catch (retryError) {
+              return Promise.reject(retryError)
+            }
+          }
+        }
 
         // Only attempt refresh for 401 errors that aren't already refresh/login requests
         if (

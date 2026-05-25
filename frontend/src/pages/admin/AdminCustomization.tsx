@@ -145,7 +145,13 @@ function HeroSlideForm({ slide, onSaved, onCancel }: { slide?: HeroSlide | null;
             Choose File
           </button>
           <input ref={fileRef} type="file" accept={form.media_type === 'video' ? 'video/*' : 'image/*'} onChange={handleFileChange} className="hidden" />
-          {file && <span className="text-sm text-gray-600">{file.name}</span>}
+          {file && <span className="text-sm text-gray-600">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</span>}
+          {file && file.size > 10 * 1024 * 1024 && (
+            <p className="mt-1 text-xs text-amber-600 flex items-center gap-1">
+              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              Large file detected. For videos over 10 MB, consider hosting on <strong>YouTube or Vimeo</strong> and using the external URL field below instead.
+            </p>
+          )}
         </div>
         {preview && form.media_type === 'image' && (
           <div className="mt-3 relative inline-block">
@@ -312,7 +318,13 @@ function TestimonialForm({ testimonial, onSaved, onCancel }: { testimonial?: Tes
             Choose File
           </button>
           <input ref={fileRef} type="file" accept={form.media_type === 'video' ? 'video/*' : 'image/*'} onChange={handleFileChange} className="hidden" />
-          {file && <span className="text-sm text-gray-600">{file.name}</span>}
+          {file && <span className="text-sm text-gray-600">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</span>}
+          {file && file.size > 10 * 1024 * 1024 && (
+            <p className="mt-1 text-xs text-amber-600 flex items-center gap-1">
+              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              Large file detected. For videos over 10 MB, consider hosting on <strong>YouTube or Vimeo</strong> and using the external URL field below instead.
+            </p>
+          )}
         </div>
         {preview && form.media_type === 'image' && (
           <div className="mt-3 relative inline-block">
@@ -1080,7 +1092,13 @@ function VideoForm({ video, onSaved, onCancel }: { video?: VideoContent | null; 
           const f = e.target.files?.[0]
           if (f) { setVideoFile(f); setVideoPreview(URL.createObjectURL(f)); setForm(p => ({ ...p, video_url: '' })) }
         }} className="hidden" />
-        {videoFile && <span className="text-sm text-gray-600">{videoFile.name}</span>}
+        {videoFile && <span className="text-sm text-gray-600">{videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)</span>}
+        {videoFile && videoFile.size > 10 * 1024 * 1024 && (
+          <p className="mt-1 text-xs text-amber-600 flex items-center gap-1">
+            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+            Large file detected. For videos over 10 MB, consider hosting on <strong>YouTube or Vimeo</strong> and using the external URL field below instead.
+          </p>
+        )}
       </div>
       {videoPreview && (
         <div className="mt-3 relative inline-block">
