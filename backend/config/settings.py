@@ -217,7 +217,7 @@ CLOUDINARY_STORAGE = {
 
 # Use Cloudinary for media files in production, local filesystem in development
 if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    DEFAULT_FILE_STORAGE = 'apps.customization.storage.SmartCloudinaryStorage'
 
 # Email Configuration
 # The custom CertifiEmailBackend handles Avast SSL interception (dev mode uses CERT_NONE,
