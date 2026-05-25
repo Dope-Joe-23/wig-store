@@ -156,11 +156,23 @@ SIMPLE_JWT = {
 }
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:3000',
-    cast=Csv(),
-)
+# -----
+# In development, allow all origins for convenience.
+# In production, restrict to CORS_ALLOWED_ORIGINS env var.
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = config(
+        'CORS_ALLOWED_ORIGINS',
+        default=(
+            'http://localhost:5173,http://localhost:5174,http://localhost:3000,'
+            'http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:3000,'
+            'https://wig-store-seven.vercel.app'
+        ),
+        cast=Csv(),
+    )
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -179,7 +191,6 @@ CORS_EXPOSE_HEADERS = [
     'x-csrftoken',
 ]
 CORS_PREFLIGHT_MAX_AGE = 600
-CORS_PREFLIGHT_ALLOW_ALL = True
 
 # Celery Configuration
 CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
