@@ -84,22 +84,34 @@ class AboutPageSerializer(serializers.ModelSerializer):
 class VideoContentSerializer(serializers.ModelSerializer):
     video_url_display = serializers.SerializerMethodField()
     thumbnail_url_display = serializers.SerializerMethodField()
-    
+    thumbnail_clear = serializers.BooleanField(write_only=True, required=False, default=False)
+
     class Meta:
         model = VideoContent
         fields = [
             'id', 'title', 'description', 'category',
             'video_file', 'video_url', 'video_url_display',
             'thumbnail_file', 'thumbnail_url', 'thumbnail_url_display',
+            'thumbnail_clear',
             'duration', 'is_active', 'order', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
-    
+
     def get_video_url_display(self, obj):
         return obj.get_video_url()
-    
+
     def get_thumbnail_url_display(self, obj):
         return obj.get_thumbnail_url()
+
+    def update(self, instance, validated_data):
+        if validated_data.pop('thumbnail_clear', False):
+            instance.thumbnail_file = None
+            instance.thumbnail_url = ''
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        validated_data.pop('thumbnail_clear', None)
+        return super().create(validated_data)
 
 
 class BlogPostSerializer(serializers.ModelSerializer):

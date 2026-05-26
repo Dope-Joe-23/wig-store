@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
 import { videosApi, VideoContent } from '@services/videos'
+import { getVideoFallbackThumbnail, getYouTubeId, getYouTubeThumbnailUrl } from '@utils/helpers'
 
 const categoryIcons: Record<string, string> = {
   how_to_use: '📖',
@@ -115,18 +116,62 @@ export default function VideosSection() {
                 onClick={() => setActiveVideo(video)}
               >
                 {/* Thumbnail */}
-                <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                <div
+                  className="aspect-video bg-gray-100 relative overflow-hidden"
+                  onMouseEnter={(e) => {
+                    const video = e.currentTarget.querySelector('video')
+                    if (video) video.play().catch(() => {})
+                  }}
+                  onMouseLeave={(e) => {
+                    const video = e.currentTarget.querySelector('video')
+                    if (video) { video.pause(); video.currentTime = 0 }
+                  }}
+                >
                   {video.thumbnail_url_display ? (
                     <img
                       src={video.thumbnail_url_display}
                       alt={video.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                  ) : video.video_url_display ? (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100 to-purple-100">
-                      <span className="text-6xl">🎬</span>
-                    </div>
-                  ) : (
+                  ) : video.video_url_display ? (() => {
+                    const url = video.video_url_display!
+                    const fallback = getVideoFallbackThumbnail(url)
+
+                    if (fallback?.type === 'image') {
+                      return (
+                        <img
+                          src={fallback.url}
+                          alt={video.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          onError={(e) => {
+                            // Fallback to lower quality YouTube thumbnail if maxresdefault fails
+                            const ytId = getYouTubeId(url)
+                            if (ytId) {
+                              (e.target as HTMLImageElement).src = getYouTubeThumbnailUrl(ytId, 'hq')
+                            }
+                          }}
+                        />
+                      )
+                    }
+
+                    if (fallback?.type === 'video') {
+                      return (
+                        <video
+                          src={fallback.url}
+                          className="w-full h-full object-cover"
+                          muted
+                          playsInline
+                        />
+                      )
+                    }
+
+                    // Vimeo or unsupported URL: gradient placeholder with play icon
+                    return (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100 to-purple-100">
+                        <span className="text-6xl">🎬</span>
+                      </div>
+                    )
+                  })() : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100 to-purple-100">
                       <span className="text-6xl">🎬</span>
                     </div>

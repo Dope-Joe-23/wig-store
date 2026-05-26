@@ -6,10 +6,11 @@ from decimal import Decimal
 
 import requests
 from django.conf import settings
-from django.db import transaction
+from django.db import models, transaction
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 
+from apps.products.models import Product
 from apps.orders.models import Order
 from .models import Payment
 
@@ -170,6 +171,10 @@ def complete_verified_payment(reference: str, transaction_data: dict) -> Payment
         if payment.status == 'completed' and order.payment_status == 'paid':
             return payment
 
+        # If payment had failed before, stock was restored by mark_failed_payment.
+        # Re-decrement it now since the payment is confirmed.
+        was_previously_failed = payment.status == 'failed'
+
         authorization = transaction_data.get('authorization') or {}
         paid_at_value = (
             transaction_data.get('paid_at')
@@ -191,6 +196,14 @@ def complete_verified_payment(reference: str, transaction_data: dict) -> Payment
             ]
         )
 
+        # If payment had failed before, stock was restored by mark_failed_payment.
+        # Re-decrement it now that the payment is confirmed.
+        if was_previously_failed:
+            for item in order.items.all():
+                Product.objects.filter(id=item.product_id).update(
+                    stock_quantity=models.F('stock_quantity') - item.quantity
+                )
+
         order.payment_status = 'paid'
         order.payment_reference = reference
         order.status = 'confirmed'
@@ -200,8 +213,32 @@ def complete_verified_payment(reference: str, transaction_data: dict) -> Payment
 
 
 def mark_failed_payment(reference: str, reason: str = '') -> None:
-    Payment.objects.filter(reference=reference).update(status='failed', notes=reason)
-    Order.objects.filter(payment_reference=reference).update(payment_status='pending')
+    from apps.orders.models import OrderItem
+
+    with transaction.atomic():
+        payment = Payment.objects.select_for_update().filter(reference=reference).first()
+        if not payment:
+            Payment.objects.filter(reference=reference).update(status='failed', notes=reason)
+            Order.objects.filter(payment_reference=reference).update(payment_status='pending')
+            return
+
+        payment.status = 'failed'
+        payment.notes = reason
+        payment.save(update_fields=['status', 'notes', 'updated_at'])
+
+        # Restore product stock from unresolvable failed payments
+        if payment.order:
+            order = Order.objects.select_for_update().get(id=payment.order_id)
+            order.payment_status = 'pending'
+            order.save(update_fields=['payment_status', 'updated_at'])
+
+            # Only restore stock if the order has NOT been cancelled (which already restores stock)
+            if order.status != 'cancelled':
+                items = OrderItem.objects.filter(order=order).select_related('product')
+                for item in items:
+                    Product.objects.filter(id=item.product_id).update(
+                        stock_quantity=models.F('stock_quantity') + item.quantity
+                    )
 
 
 def validate_webhook_signature(raw_body: bytes, signature: str) -> bool:

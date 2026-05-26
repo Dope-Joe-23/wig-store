@@ -9,7 +9,7 @@ import {
 } from '@services/customization'
 import { blogApi, type BlogPost } from '@services/blog'
 import { videosApi, type VideoContent } from '@services/videos'
-import { getImageUrl, getApiErrorMessage } from '@utils/helpers'
+import { getImageUrl, getApiErrorMessage, getVideoFallbackThumbnail, getYouTubeId, getYouTubeThumbnailUrl } from '@utils/helpers'
 import { productService } from '@services/products'
 import type { Product } from '../../types'
 import { CloseIcon } from '@components/Icons'
@@ -1003,6 +1003,8 @@ function VideoForm({ video, onSaved, onCancel }: { video?: VideoContent | null; 
   const [state, setState] = useState<FormState>({ saving: false, error: null, success: null })
   const videoRef = useRef<HTMLInputElement>(null)
   const thumbRef = useRef<HTMLInputElement>(null)
+  const [showThumbnailSection, setShowThumbnailSection] = useState(!!video?.thumbnail_url_display)
+  const [thumbnailCleared, setThumbnailCleared] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -1024,6 +1026,9 @@ function VideoForm({ video, onSaved, onCancel }: { video?: VideoContent | null; 
         fd.append('thumbnail_file', thumbnailFile)
       } else if (form.thumbnail_url) {
         fd.append('thumbnail_url', form.thumbnail_url)
+      } else if (thumbnailCleared) {
+        // Explicitly signal the backend to clear both thumbnail fields
+        fd.append('thumbnail_clear', 'true')
       }
       if (video) {
         await videosApi.update(video.id, fd)
@@ -1080,69 +1085,135 @@ function VideoForm({ video, onSaved, onCancel }: { video?: VideoContent | null; 
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-nude focus:border-transparent outline-none" />
       </div>
 
-      <hr className="border-gray-200" />
-      <h4 className="font-bold text-gray-900">Video</h4>
+      <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+        <p className="text-sm text-blue-800">
+          <strong>💡 Tip:</strong> Thumbnail is optional. For YouTube videos, thumbnail is auto-generated from the video ID.
+        </p>
+      </div>
 
-      <div className="flex items-center gap-4">
-        <button type="button" onClick={() => videoRef.current?.click()}
-          className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
-          Choose Video File
-        </button>
-        <input ref={videoRef} type="file" accept="video/*" onChange={e => {
-          const f = e.target.files?.[0]
-          if (f) { setVideoFile(f); setVideoPreview(URL.createObjectURL(f)); setForm(p => ({ ...p, video_url: '' })) }
-        }} className="hidden" />
-        {videoFile && <span className="text-sm text-gray-600">{videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)</span>}
-        {videoFile && videoFile.size > 10 * 1024 * 1024 && (
-          <p className="mt-1 text-xs text-amber-600 flex items-center gap-1">
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
-            Large file detected. For videos over 10 MB, consider hosting on <strong>YouTube or Vimeo</strong> and using the external URL field below instead.
-          </p>
+      <hr className="border-gray-200" />
+      <h4 className="font-bold text-gray-900">📹 Video Source</h4>
+
+      <div className="space-y-3">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Upload Video File</label>
+          <div className="flex items-center gap-4">
+            <button type="button" onClick={() => videoRef.current?.click()}
+              className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
+              Choose Video File
+            </button>
+            <input ref={videoRef} type="file" accept="video/*" onChange={e => {
+              const f = e.target.files?.[0]
+              if (f) { setVideoFile(f); setVideoPreview(URL.createObjectURL(f)); setForm(p => ({ ...p, video_url: '' })) }
+            }} className="hidden" />
+            {videoFile ? (
+              <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)
+              </span>
+            ) : (
+              <span className="text-sm text-gray-500">(no file selected)</span>
+            )}
+          </div>
+          {videoFile && videoFile.size > 10 * 1024 * 1024 && (
+            <p className="mt-1 text-xs text-amber-600 flex items-center gap-1">
+              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              Large file detected. For videos over 10 MB, consider hosting on <strong>YouTube or Vimeo</strong> and using the external URL field below instead.
+            </p>
+          )}
+        </div>
+        {videoPreview && (
+          <div className="mt-3 relative inline-block">
+            <video src={videoPreview} className="h-32 w-48 object-cover rounded-lg border border-green-300 bg-black" controls />
+            <button type="button" onClick={() => { setVideoFile(null); setVideoPreview(null); setForm(p => ({ ...p, video_url: '' })) }}
+              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"><CloseIcon className="w-4 h-4" /></button>
+          </div>
         )}
       </div>
-      {videoPreview && (
-        <div className="mt-3 relative inline-block">
-          <video src={videoPreview} className="h-32 w-48 object-cover rounded-lg border" controls />
-          <button type="button" onClick={() => { setVideoFile(null); setVideoPreview(null) }}
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"><CloseIcon className="w-4 h-4" /></button>
-        </div>
-      )}
 
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">Or External Video URL <span className="text-gray-400 font-normal">(YouTube, Vimeo, etc.)</span></label>
-        <input type="url" value={form.video_url} onChange={e => { setForm(p => ({ ...p, video_url: e.target.value })); setVideoFile(null) }}
+        <input type="url" value={form.video_url} onChange={e => { setForm(p => ({ ...p, video_url: e.target.value })); if (videoFile) setVideoFile(null) }}
           placeholder="https://youtube.com/watch?v=..."
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-nude focus:border-transparent outline-none" />
+        {form.video_url && !videoFile && (
+          <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            External URL set
+          </p>
+        )}
       </div>
 
       <hr className="border-gray-200" />
-      <h4 className="font-bold text-gray-900">Thumbnail</h4>
-
-      <div className="flex items-center gap-4">
-        <button type="button" onClick={() => thumbRef.current?.click()}
-          className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
-          Choose Thumbnail Image
+      <div>
+        <button
+          type="button"
+          onClick={() => setShowThumbnailSection(!showThumbnailSection)}
+          className="flex items-center gap-2 text-gray-700 font-semibold hover:text-rose-nude transition"
+        >
+          <svg className={`w-5 h-5 transition-transform ${showThumbnailSection ? 'rotate-90' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+          </svg>
+          🖼️ Thumbnail (Optional)
         </button>
-        <input ref={thumbRef} type="file" accept="image/*" onChange={e => {
-          const f = e.target.files?.[0]
-          if (f) { setThumbnailFile(f); setThumbnailPreview(URL.createObjectURL(f)); setForm(p => ({ ...p, thumbnail_url: '' })) }
-        }} className="hidden" />
-        {thumbnailFile && <span className="text-sm text-gray-600">{thumbnailFile.name}</span>}
       </div>
-      {thumbnailPreview && (
-        <div className="mt-3 relative inline-block">
-          <img src={thumbnailPreview} alt="Thumbnail preview" className="h-32 w-48 object-cover rounded-lg border" />
-          <button type="button" onClick={() => { setThumbnailFile(null); setThumbnailPreview(null) }}
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"><CloseIcon className="w-4 h-4" /></button>
+
+      {showThumbnailSection && (
+        <div className="space-y-3 pl-4 border-l-2 border-gray-200">
+          <p className="text-xs text-gray-600">
+            💡 <strong>Auto-generated for YouTube:</strong> Leave blank, and YouTube thumbnail will be fetched automatically.
+          </p>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Upload Custom Thumbnail</label>
+            <div className="flex items-center gap-4">
+              <button type="button" onClick={() => thumbRef.current?.click()}
+                className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
+                Choose Image
+              </button>
+              <input ref={thumbRef} type="file" accept="image/*" onChange={e => {
+                const f = e.target.files?.[0]
+                if (f) { setThumbnailFile(f); setThumbnailPreview(URL.createObjectURL(f)); setForm(p => ({ ...p, thumbnail_url: '' })) }
+              }} className="hidden" />
+              {thumbnailFile ? (
+                <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  {thumbnailFile.name}
+                </span>
+              ) : (
+                <span className="text-sm text-gray-500">(no file selected)</span>
+              )}
+            </div>
+          </div>
+          {thumbnailPreview && (
+            <div className="mt-3 relative inline-block">
+              <img src={thumbnailPreview} alt="Thumbnail preview" className="h-32 w-48 object-cover rounded-lg border border-green-300" />
+              <button type="button" onClick={() => { setThumbnailFile(null); setThumbnailPreview(null); setForm(p => ({ ...p, thumbnail_url: '' })); setThumbnailCleared(true) }}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"><CloseIcon className="w-4 h-4" /></button>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Or External Thumbnail URL</label>
+            <input type="url" value={form.thumbnail_url} onChange={e => { setForm(p => ({ ...p, thumbnail_url: e.target.value })); if (thumbnailFile) setThumbnailFile(null) }}
+              placeholder="https://example.com/thumbnail.jpg"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-nude focus:border-transparent outline-none" />
+            {form.thumbnail_url && !thumbnailFile && (
+              <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                External URL set
+              </p>
+            )}
+          </div>
         </div>
       )}
-
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">Or External Thumbnail URL</label>
-        <input type="url" value={form.thumbnail_url} onChange={e => { setForm(p => ({ ...p, thumbnail_url: e.target.value })); setThumbnailFile(null) }}
-          placeholder="https://example.com/thumbnail.jpg"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-nude focus:border-transparent outline-none" />
-      </div>
 
       <hr className="border-gray-200" />
 
@@ -1544,7 +1615,46 @@ export function AdminCustomizationPage() {
           <div className="w-24 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
             {video.thumbnail_url_display ? (
               <img src={getImageUrl(video.thumbnail_url_display)} alt={video.title} className="w-full h-full object-cover" />
-            ) : (
+            ) : video.video_url_display ? (() => {
+              const url = video.video_url_display!
+              const fallback = getVideoFallbackThumbnail(url)
+
+              if (fallback?.type === 'image') {
+                return (
+                  <img
+                    src={fallback.url}
+                    alt={video.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const ytId = getYouTubeId(url)
+                      if (ytId) {
+                        (e.target as HTMLImageElement).src = getYouTubeThumbnailUrl(ytId, 'hq')
+                      }
+                    }}
+                  />
+                )
+              }
+
+              if (fallback?.type === 'video') {
+                return (
+                  <video
+                    src={fallback.url}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
+                    onMouseLeave={(e) => { e.currentTarget.pause(); e.currentTarget.currentTime = 0 }}
+                  />
+                )
+              }
+
+              // Vimeo or unsupported URL: show play icon
+              return (
+                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                </div>
+              )
+            })() : (
               <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
               </div>

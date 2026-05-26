@@ -5,6 +5,9 @@ import { useCartStore } from '@stores/cartStore'
 
 type VerificationState = 'pending' | 'success' | 'failed'
 
+const MAX_RETRIES = 5
+const RETRY_BASE_DELAY_MS = 2000
+
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams()
   const clearCart = useCartStore((state) => state.clearCart)
@@ -18,11 +21,15 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     let isMounted = true
+    let attempts = 0
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
 
     const verifyPayment = async () => {
       if (!reference) {
-        setState('failed')
-        setMessage('We could not find a payment reference for this transaction.')
+        if (isMounted) {
+          setState('failed')
+          setMessage('We could not find a payment reference for this transaction.')
+        }
         return
       }
 
@@ -30,16 +37,38 @@ export default function PaymentSuccess() {
         const response = await paymentService.verifyPayment(reference)
         if (!isMounted) return
 
+        // Payment confirmed — success!
         if (response.data.payment_status === 'paid') {
           clearCart()
           setState('success')
           setMessage(`Payment successful for order ${response.data.order_number}.`)
-        } else {
-          setState('failed')
-          setMessage('Payment verification did not complete successfully.')
+          return
         }
+
+        // Not yet paid (e.g., Paystack propagation delay) — retry with exponential backoff
+        if (attempts < MAX_RETRIES) {
+          attempts++
+          const delay = RETRY_BASE_DELAY_MS * Math.pow(1.5, attempts - 1)
+          setMessage(`Verifying your payment... (attempt ${attempts}/${MAX_RETRIES + 1})`)
+          timeoutId = setTimeout(verifyPayment, delay)
+          return
+        }
+
+        // Exhausted retries
+        setState('failed')
+        setMessage('Payment verification did not complete successfully. Your payment may still be processing — please refresh the page or check your orders.')
       } catch (error: any) {
         if (!isMounted) return
+
+        // Transient error — retry with exponential backoff
+        if (attempts < MAX_RETRIES) {
+          attempts++
+          const delay = RETRY_BASE_DELAY_MS * Math.pow(1.5, attempts - 1)
+          setMessage(`Verifying your payment... (attempt ${attempts}/${MAX_RETRIES + 1})`)
+          timeoutId = setTimeout(verifyPayment, delay)
+          return
+        }
+
         const errorMessage =
           error.response?.data?.error ||
           error.response?.data?.detail ||
@@ -53,6 +82,7 @@ export default function PaymentSuccess() {
 
     return () => {
       isMounted = false
+      if (timeoutId) clearTimeout(timeoutId)
     }
   }, [clearCart, reference])
 

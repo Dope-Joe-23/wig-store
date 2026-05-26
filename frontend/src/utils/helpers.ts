@@ -47,6 +47,59 @@ export const truncate = (text: string, length: number): string => {
 }
 
 /**
+ * Check if a URL is a YouTube video URL.
+ */
+export const isYouTubeUrl = (url: string): boolean => {
+  return /(?:youtube\.com\/watch\?v=|youtu\.be\/)/.test(url)
+}
+
+/**
+ * Check if a URL is a Vimeo video URL.
+ */
+export const isVimeoUrl = (url: string): boolean => {
+  return /vimeo\.com\/\d+/.test(url)
+}
+
+/**
+ * Extract YouTube video ID from a YouTube URL.
+ * Returns null if the URL is not a valid YouTube URL.
+ */
+export const getYouTubeId = (url: string): string | null => {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)
+  return match ? match[1] : null
+}
+
+/**
+ * Get a YouTube thumbnail URL from a video ID.
+ * @param videoId - The YouTube video ID
+ * @param quality - 'maxres' (1280x720) or 'hq' (480x360)
+ */
+export const getYouTubeThumbnailUrl = (videoId: string, quality: 'maxres' | 'hq' = 'maxres'): string => {
+  return `https://img.youtube.com/vi/${videoId}/${quality}default.jpg`
+}
+
+/**
+ * Get the best available thumbnail URL for a video.
+ * For YouTube videos, auto-generates the thumbnail URL from the video ID.
+ * For direct files, returns the video URL itself (for use in a <video> element).
+ * For Vimeo, returns null (no simple thumbnail URL without API).
+ */
+export const getVideoFallbackThumbnail = (videoUrl: string): { type: 'image' | 'video'; url: string } | null => {
+  if (isYouTubeUrl(videoUrl)) {
+    const ytId = getYouTubeId(videoUrl)
+    if (ytId) {
+      return { type: 'image', url: getYouTubeThumbnailUrl(ytId) }
+    }
+  }
+  // For direct video files (not Vimeo), return the URL for a <video> element
+  if (!isVimeoUrl(videoUrl)) {
+    return { type: 'video', url: videoUrl }
+  }
+  // Vimeo: no simple thumbnail without an API call
+  return null
+}
+
+/**
  * Extract a readable error message from a failed Axios request.
  * Handles DRF field-level validation errors (object) and top-level errors (detail),
  * as well as network and generic errors.

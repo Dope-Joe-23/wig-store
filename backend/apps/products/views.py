@@ -48,7 +48,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Annotate with relevance score for search results"""
+        user = self.request.user
         queryset = Product.objects.all()
+
+        # Hide out-of-stock products from the public shop listing
+        # Staff/admins can still see everything for inventory management
+        if self.action == 'list':
+            queryset = self._visible_products()
+
         if self.action != 'list':
             return queryset
         search_query = self.request.query_params.get('search', '')
@@ -75,7 +82,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         if len(query) < 2:
             return Response([])
         
-        products = Product.objects.filter(
+        products = self._visible_products().filter(
             Q(name__icontains=query) |
             Q(description__icontains=query) |
             Q(color__icontains=query) |
@@ -85,6 +92,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data)
     
+    def _visible_products(self):
+        """
+        Return a base queryset that hides out-of-stock products
+        from non-staff users.
+        """
+        user = self.request.user
+        qs = Product.objects.all()
+        if not (user and user.is_staff):
+            qs = qs.filter(stock_quantity__gt=0)
+        return qs
+
     def get_serializer_class(self):
         if self.action in ['retrieve', 'update', 'partial_update']:
             return ProductDetailSerializer
@@ -112,21 +130,21 @@ class ProductViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def featured(self, request):
         """Get featured products"""
-        products = Product.objects.filter(is_featured=True)[:8]
+        products = self._visible_products().filter(is_featured=True)[:8]
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def trending(self, request):
         """Get trending products"""
-        products = Product.objects.filter(is_trending=True)[:8]
+        products = self._visible_products().filter(is_trending=True)[:8]
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def new_arrivals(self, request):
         """Get new arrivals"""
-        products = Product.objects.filter(is_new=True).order_by('-created_at')[:12]
+        products = self._visible_products().filter(is_new=True).order_by('-created_at')[:12]
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data)
     
@@ -134,7 +152,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     def related(self, request, slug=None):
         """Get related products"""
         product = self.get_object()
-        related = Product.objects.filter(
+        related = self._visible_products().filter(
             Q(category=product.category) | Q(wig_type=product.wig_type)
         ).exclude(id=product.id)[:6]
         serializer = ProductListSerializer(related, many=True)

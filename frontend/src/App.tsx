@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { useRef, useEffect } from 'react'
 import Layout from '@components/layout/Layout'
 import { InternetStatus } from '@components/InternetStatus'
 import ScrollToTop from '@components/ScrollToTop'
@@ -35,6 +36,23 @@ const queryClient = new QueryClient({
 })
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
+
+// Suppress Google GSI initialization warnings in development
+if (import.meta.env.DEV) {
+  const originalWarn = console.warn
+  console.warn = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      (args[0].includes('google.accounts.id.initialize') ||
+        args[0].includes('GSI_LOGGER') ||
+        args[0].includes('The given origin is not allowed') ||
+        args[0].includes('React Router Future Flag Warning'))
+    ) {
+      return // Silently ignore these warnings in development
+    }
+    originalWarn(...args)
+  }
+}
 
 function App() {
   return (
