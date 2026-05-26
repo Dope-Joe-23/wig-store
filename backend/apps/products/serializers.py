@@ -45,7 +45,7 @@ class ProductListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'slug', 'price', 'sale_price', 'current_price',
             'category', 'color', 'length', 'primary_image', 'rating',
-            'review_count', 'is_featured', 'is_trending', 'is_new'
+            'review_count', 'stock_quantity', 'is_featured', 'is_trending', 'is_new'
         ]
     
     def get_primary_image(self, obj):

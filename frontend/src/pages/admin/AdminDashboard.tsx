@@ -123,7 +123,7 @@ export function AdminDashboardPage() {
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow p-4 sm:p-5 lg:p-6">
         <h3 className="text-lg sm:text-xl font-bold text-black-primary mb-3 sm:mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
           <a
             href="/admin/products"
             className="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-rose-nude hover:bg-rose-nude/5 transition text-center"
@@ -131,15 +131,6 @@ export function AdminDashboardPage() {
             <p className="text-2xl mb-2">📦</p>
             <p className="font-semibold text-sm sm:text-base text-black-primary">Manage Products</p>
             <p className="text-xs sm:text-sm text-gray-600">Add/Edit/Delete products</p>
-          </a>
-
-          <a
-            href="/admin/products"
-            className="p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-rose-nude hover:bg-rose-nude/5 transition text-center"
-          >
-            <p className="text-2xl mb-2">📊</p>
-            <p className="font-semibold text-sm sm:text-base text-black-primary">Update Stock</p>
-            <p className="text-xs sm:text-sm text-gray-600">Manage inventory levels</p>
           </a>
 
           <a

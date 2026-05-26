@@ -486,11 +486,23 @@ export default function ProductCatalog() {
                             <span className="text-gray-400">No Image</span>
                           </div>
                         )}
-                        {product.is_featured && (
+                        {/* Badges */}
+                        {!product.stock_quantity || product.stock_quantity === 0 ? (
+                          <>
+                            <span className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm z-10">
+                              Out of Stock
+                            </span>
+                            <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+                              <span className="bg-white/90 text-red-600 px-4 py-2 rounded-lg text-sm font-bold shadow-lg">
+                                Out of Stock
+                              </span>
+                            </div>
+                          </>
+                        ) : product.is_featured ? (
                           <span className="absolute top-3 right-3 bg-rose-nude text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
                             Featured
                           </span>
-                        )}
+                        ) : null}
                       </div>
 
                       {/* Product Info */}

@@ -48,16 +48,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         """Annotate with relevance score for search results"""
-        user = self.request.user
         queryset = Product.objects.all()
-
-        # Hide out-of-stock products from the public shop listing
-        # Staff/admins can still see everything for inventory management
-        if self.action == 'list':
-            queryset = self._visible_products()
 
         if self.action != 'list':
             return queryset
+
         search_query = self.request.query_params.get('search', '')
         if search_query:
             # Boost exact name matches and name-starting matches
@@ -94,14 +89,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     def _visible_products(self):
         """
-        Return a base queryset that hides out-of-stock products
-        from non-staff users.
+        Return all products — out-of-stock items remain visible
+        in the shop (labeled 'Out of Stock' on the frontend)
+        so customers can still add them to wishlists and be notified.
         """
-        user = self.request.user
-        qs = Product.objects.all()
-        if not (user and user.is_staff):
-            qs = qs.filter(stock_quantity__gt=0)
-        return qs
+        return Product.objects.all()
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'update', 'partial_update']:

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -7,14 +7,21 @@ import { useCartStore } from '@stores/cartStore'
 import { useAuthStore } from '@stores/authStore'
 import { orderService } from '@services/orders'
 import { paymentService } from '@services/payments'
+import { Toast, type ToastData } from '@components/Toast'
 
 export default function Checkout() {
   const navigate = useNavigate()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const user = useAuthStore((state) => state.user)
   const { simpleItems: items } = useCartStore()
-  const [apiError, setApiError] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [toast, setToast] = useState<ToastData | null>(null)
+
+  const showToast = useCallback((message: string, type: ToastData['type']) => {
+    setToast({ message, type })
+  }, [])
+
+  const handleToastClose = useCallback(() => setToast(null), [])
   const [isReady, setIsReady] = useState(false)
 
   const {
@@ -66,7 +73,6 @@ export default function Checkout() {
 
   const onSubmit = async (data: CheckoutFormData) => {
     try {
-      setApiError('')
       setIsSubmitting(true)
 
       // Prepare cart items for order
@@ -101,13 +107,27 @@ export default function Checkout() {
 
       window.location.href = paymentResponse.data.authorization_url
     } catch (error: any) {
-      const message =
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        error.response?.data?.cart_items?.[0] ||
-        error.response?.data?.error ||
-        'Failed to place order. Please try again.'
-      setApiError(message)
+      const data = error.response?.data
+    let message = ''
+    if (typeof data === 'string') {
+      message = data
+    } else if (data?.detail) {
+      message = data.detail
+    } else if (data?.non_field_errors) {
+      // DRF non-field error — contains the stock validation message
+      message = Array.isArray(data.non_field_errors)
+        ? data.non_field_errors.join('. ')
+        : String(data.non_field_errors)
+    } else if (data?.message) {
+      message = data.message
+    } else if (data?.cart_items?.[0]) {
+      message = data.cart_items[0]
+    } else if (data?.error) {
+      message = data.error
+    } else {
+      message = 'Failed to place order. Please try again.'
+    }
+      showToast(message, 'error')
       console.error('Order error:', error.response?.data || error.message)
     } finally {
       setIsSubmitting(false)
@@ -132,13 +152,6 @@ export default function Checkout() {
           <h1 className="text-4xl font-heading font-bold text-black-primary mb-2">Checkout</h1>
           <p className="text-gray-600">Complete your purchase securely</p>
         </div>
-
-        {/* Error Alert */}
-        {apiError && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800">{apiError}</p>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
@@ -469,6 +482,8 @@ export default function Checkout() {
             </div>
           </div>
         </div>
+        {/* Floating Toast Notification */}
+        <Toast toast={toast} onClose={handleToastClose} duration={6000} />
       </div>
     </div>
   )

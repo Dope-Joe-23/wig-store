@@ -79,7 +79,8 @@ export default function Cart() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* Desktop Table View */}
+              <div className="hidden md:block bg-white rounded-lg shadow-md overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b">
                     <tr>
@@ -125,7 +126,7 @@ export default function Cart() {
                           <div className="flex items-center gap-2 w-32">
                             <button
                               onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                              className="px-2 py-1 border border-gray-300 rounded hover:bg-gray-50"
+                              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 font-medium"
                             >
                               −
                             </button>
@@ -134,7 +135,7 @@ export default function Cart() {
                             </span>
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="px-2 py-1 border border-gray-300 rounded hover:bg-gray-50"
+                              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 font-medium"
                             >
                               +
                             </button>
@@ -155,6 +156,68 @@ export default function Cart() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {items.map((item) => (
+                  <div key={item.id} className="bg-white rounded-lg shadow-md p-4">
+                    {/* Image + Name Row */}
+                    <div className="flex gap-3 mb-4">
+                      {item.image && (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <Link
+                          to={`/products/${item.slug}`}
+                          className="font-semibold text-black-primary hover:text-rose-nude transition text-sm line-clamp-2"
+                        >
+                          {item.name}
+                        </Link>
+                        <p className="text-sm text-gray-500 mt-1">{formatPrice(item.price)} each</p>
+                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-500 hover:text-red-700 flex-shrink-0 self-start"
+                        aria-label="Remove item"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Quantity + Total Row */}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          className="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-lg"
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+                        <span className="w-8 text-center font-semibold text-base">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-9 h-9 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-lg"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <span className="font-bold text-base text-black-primary">
+                        {formatPrice(item.price * item.quantity)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Continue Shopping */}

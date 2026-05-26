@@ -551,12 +551,20 @@ export function AdminProductsPage() {
                   >
                     {product.stock_quantity} units
                   </span>
-                  <button
-                    onClick={() => handleOpenEditModal(product)}
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
-                  >
-                    Edit
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEditStock(product)}
+                      className="text-rose-nude hover:text-rose-700 font-semibold text-sm"
+                    >
+                      Stock
+                    </button>
+                    <button
+                      onClick={() => handleOpenEditModal(product)}
+                      className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
+                    >
+                      Edit
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

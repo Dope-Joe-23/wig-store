@@ -16,7 +16,9 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [sidebarUserMenuOpen, setSidebarUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
+  const sidebarUserMenuRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = () => {
     logout()
@@ -27,11 +29,14 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
     localStorage.removeItem('refresh_token')
   }
 
-  // Close user menu when clicking outside
+  // Close user menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false)
+      }
+      if (sidebarUserMenuRef.current && !sidebarUserMenuRef.current.contains(event.target as Node)) {
+        setSidebarUserMenuOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -133,10 +138,10 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
           </a>
         </div>
 
-        {/* User Info - Profile button (clickable) instead of visible logout */}
-        <div className="border-t border-gray-700 p-4 relative" ref={userMenuRef}>
+        {/* User Info (sidebar) - interactive dropdown on desktop */}
+        <div className="border-t border-gray-700 p-4 relative" ref={sidebarUserMenuRef}>
           <button
-            onClick={() => setUserMenuOpen(!userMenuOpen)}
+            onClick={() => setSidebarUserMenuOpen(!sidebarUserMenuOpen)}
             className="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded-lg transition"
           >
             <UserAvatar user={user} size="sm" />
@@ -145,7 +150,7 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
               <p className="text-xs text-gray-400 truncate">{user.email}</p>
             </div>
             <svg
-              className={`w-4 h-4 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 text-gray-400 transition-transform ${sidebarUserMenuOpen ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -154,12 +159,12 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
             </svg>
           </button>
 
-          {/* Dropdown Menu */}
-          {userMenuOpen && (
+          {/* Sidebar Dropdown Menu */}
+          {sidebarUserMenuOpen && (
             <div className="absolute bottom-full left-0 right-0 mb-2 mx-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
               <div className="py-1">
                 <button
-                  onClick={() => { navigate('/'); setUserMenuOpen(false) }}
+                  onClick={() => { navigate('/'); setSidebarUserMenuOpen(false) }}
                   className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition"
                 >
                   <StoreIcon className="w-4 h-4" />
@@ -168,7 +173,7 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
                 <a
                   href="/profile"
                   className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition"
-                  onClick={() => setUserMenuOpen(false)}
+                  onClick={() => setSidebarUserMenuOpen(false)}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -178,7 +183,7 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
                 <a
                   href="/settings"
                   className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition"
-                  onClick={() => setUserMenuOpen(false)}
+                  onClick={() => setSidebarUserMenuOpen(false)}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -188,7 +193,7 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
                 </a>
                 <hr className="border-gray-100" />
                 <button
-                  onClick={() => { handleLogout(); setUserMenuOpen(false) }}
+                  onClick={() => { handleLogout(); setSidebarUserMenuOpen(false) }}
                   className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

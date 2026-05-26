@@ -235,7 +235,7 @@ export function AdminUsersPage() {
               <div className="text-right">
                 <p className="text-xs text-gray-600 mb-1">Joined</p>
                 <p className="text-sm font-semibold text-black-primary">
-                  {new Date(user.created_at).toLocaleDateString()}
+                  {new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </p>
               </div>
             </div>
@@ -246,10 +246,10 @@ export function AdminUsersPage() {
               className={`w-full py-2 px-3 rounded font-semibold text-sm transition ${
                 user.is_staff
                   ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                  : 'bg-green-50 text-green-600 hover:bg-green-100'
+                  : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
               }`}
             >
-              {user.is_staff ? '👉 Remove Staff' : '👉 Make Staff'}
+              {user.is_staff ? 'Remove Staff' : 'Make Staff'}
             </button>
           </div>
         ))}

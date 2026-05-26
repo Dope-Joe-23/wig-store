@@ -7,6 +7,17 @@ import { useAuthStore } from '@stores/authStore'
 import { wishlistService } from '@services/wishlist'
 import { getImageUrl } from '@utils/helpers'
 
+function SpecItem({ label, value, capitalize }: { label: string; value?: string; capitalize?: boolean }) {
+  return (
+    <div>
+      <p className="text-gray-500 text-xs">{label}</p>
+      <p className={`font-semibold text-black-primary text-sm ${capitalize ? 'capitalize' : ''}`}>
+        {value || '—'}
+      </p>
+    </div>
+  )
+}
+
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
@@ -118,28 +129,32 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-white py-12">
       <div className="container-base">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mb-8 text-sm">
-          <Link to="/" className="text-gray-600 hover:text-black-primary">
+        <div className="flex items-center gap-1.5 md:gap-2 mb-6 md:mb-8 text-xs md:text-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
+          <Link to="/" className="text-gray-600 hover:text-black-primary flex-shrink-0">
             Home
           </Link>
-          <span className="text-gray-400">/</span>
-          <Link to="/products" className="text-gray-600 hover:text-black-primary">
+          <span className="text-gray-400 flex-shrink-0">/</span>
+          <Link to="/products" className="text-gray-600 hover:text-black-primary flex-shrink-0">
             Products
           </Link>
-          <span className="text-gray-400">/</span>
-          <Link
-            to={`/products?category=${product.category?.id}`}
-            className="text-gray-600 hover:text-black-primary"
-          >
-            {product.category?.name || 'Uncategorized'}
-          </Link>
-          <span className="text-gray-400">/</span>
-          <span className="text-black-primary font-semibold">{product.name}</span>
+          <span className="text-gray-400 flex-shrink-0">/</span>
+          {product.category && (
+            <>
+              <Link
+                to={`/products?category=${product.category?.id}`}
+                className="text-gray-600 hover:text-black-primary flex-shrink-0"
+              >
+                {product.category?.name || 'Uncategorized'}
+              </Link>
+              <span className="text-gray-400 flex-shrink-0">/</span>
+            </>
+          )}
+          <span className="text-black-primary font-semibold truncate min-w-0">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Image */}
-          <div className="relative bg-gray-100 rounded-lg overflow-hidden h-96 lg:h-auto lg:aspect-square flex items-center justify-center group">
+          <div className="relative bg-gray-100 rounded-lg overflow-hidden h-64 sm:h-80 md:h-96 lg:h-auto lg:aspect-square flex items-center justify-center group">
             {/* Wishlist Heart Button */}
             <button
               onClick={handleWishlistToggle}
@@ -183,7 +198,7 @@ export default function ProductDetail() {
               <p className="text-sm text-gray-500 mb-2">{product.category?.name || 'Uncategorized'}</p>
 
               {/* Title */}
-              <h1 className="text-4xl font-heading font-bold text-black-primary mb-4">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-black-primary mb-4">
                 {product.name}
               </h1>
 
@@ -202,7 +217,7 @@ export default function ProductDetail() {
               {/* Price */}
               <div className="mb-6">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-black-primary">
+                  <span className="text-2xl md:text-3xl font-bold text-black-primary">
                     {formatPrice(product.current_price)}
                   </span>
                   {product.sale_price && (
@@ -219,50 +234,51 @@ export default function ProductDetail() {
               {/* Specs */}
               <div className="bg-ivory rounded-lg p-4 mb-6">
                 <h3 className="font-semibold text-black-primary mb-3">Specifications</h3>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <p className="text-gray-600">Wig Type</p>
-                    <p className="font-semibold text-black-primary capitalize">{product.wig_type?.replace('_', ' ')}</p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                  <SpecItem label="Wig Type" value={product.wig_type?.replace('_', ' ')} capitalize />
+                  <SpecItem label="Texture" value={product.texture} capitalize />
+                  <SpecItem label="Color" value={product.color} />
+                  <SpecItem label="Length" value={product.length} />
+                  <SpecItem label="Cap Size" value={product.cap_size} />
+                  <SpecItem label="Stock" value={product.stock_quantity > 0 ? `${product.stock_quantity} left` : 'Out of stock'} />
+                </div>
+              </div>
+            </div>
+
+            {/* Out of Stock Banner */}
+            {(!product.stock_quantity || product.stock_quantity === 0) && (
+              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                   <div>
-                    <p className="text-gray-600">Texture</p>
-                    <p className="font-semibold text-black-primary capitalize">{product.texture}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Color</p>
-                    <p className="font-semibold text-black-primary">{product.color}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Length</p>
-                    <p className="font-semibold text-black-primary">{product.length}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Cap Size</p>
-                    <p className="font-semibold text-black-primary">{product.cap_size}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Stock</p>
-                    <p className="font-semibold text-black-primary">
-                      {product.stock_quantity > 0 ? `${product.stock_quantity} left` : 'Out of stock'}
+                    <p className="font-bold text-red-800">Out of Stock</p>
+                    <p className="text-sm text-red-600">
+                      This product is currently unavailable. Add it to your wishlist to get notified when it's back in stock.
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Add to Cart */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  disabled={!product.stock_quantity || product.stock_quantity === 0}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   −
                 </button>
                 <span className="text-lg font-semibold w-12 text-center">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  disabled={!product.stock_quantity || product.stock_quantity === 0}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
                 </button>
@@ -270,16 +286,32 @@ export default function ProductDetail() {
 
               <button
                 onClick={handleAddToCart}
-                className="w-full px-6 py-3 bg-rose-nude text-white rounded-lg hover:bg-opacity-90 transition font-semibold"
+                disabled={!product.stock_quantity || product.stock_quantity === 0}
+                className={`w-full px-6 py-3 rounded-lg transition font-semibold ${
+                  product.stock_quantity > 0
+                    ? 'bg-rose-nude text-white hover:bg-opacity-90'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
               >
-                {addedToCart ? 'Added to Cart ✓' : 'Add to Cart'}
+                {!product.stock_quantity || product.stock_quantity === 0
+                  ? 'Out of Stock'
+                  : addedToCart
+                  ? 'Added to Cart ✓'
+                  : 'Add to Cart'}
               </button>
 
               <button
                 onClick={handleBuyNow}
-                className="w-full px-6 py-3 bg-black-primary text-white rounded-lg hover:bg-opacity-90 transition font-semibold"
+                disabled={!product.stock_quantity || product.stock_quantity === 0}
+                className={`w-full px-6 py-3 rounded-lg transition font-semibold ${
+                  product.stock_quantity > 0
+                    ? 'bg-black-primary text-white hover:bg-opacity-90'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
               >
-                Buy Now
+                {!product.stock_quantity || product.stock_quantity === 0
+                  ? 'Unavailable'
+                  : 'Buy Now'}
               </button>
             </div>
           </div>
