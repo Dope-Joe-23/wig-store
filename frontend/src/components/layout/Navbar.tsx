@@ -6,6 +6,7 @@ import { useAuthStore } from '@stores/authStore'
 import { authService } from '@services/auth'
 import { UserMenu } from '@components/UserMenu'
 import { CartIcon } from '@components/Icons'
+import logoUrl from '../../../Affordable_logo.jpeg'
 
 export default function Navbar() {
   const navigate = useNavigate()
@@ -43,8 +44,23 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 bg-ivory border-b border-black-primary border-opacity-10">
       <nav className="container-base py-4 flex-between">
-        <Link to="/" className="text-2xl font-heading font-bold">
-          Wiggle
+        <Link to="/" className="flex items-center gap-4 min-w-0 group" aria-label="AH&M home">
+          <div className="relative flex-shrink-0">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-rose-nude to-brown opacity-20 group-hover:opacity-30 transition-opacity duration-300 blur-sm" />
+            <img
+              src={logoUrl}
+              alt="AH&M"
+              className="relative h-14 w-14 md:h-16 md:w-16 rounded-full object-cover ring-2 ring-rose-nude/20 bg-white"
+            />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-xl md:text-2xl lg:text-3xl font-heading font-bold tracking-tight text-black-primary">
+              AH&M
+            </span>
+            <span className="hidden sm:block text-[10px] md:text-xs tracking-[0.2em] text-black-primary/40 uppercase font-medium">
+              Affordable Hair &amp; More
+            </span>
+          </div>
         </Link>
 
         {/* Desktop nav links */}

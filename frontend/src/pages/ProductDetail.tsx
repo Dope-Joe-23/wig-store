@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useProductBySlug } from '@hooks/useProducts'
 import { useCartStore } from '@stores/cartStore'
 import { useWishlistStore } from '@stores/wishlistStore'
@@ -106,8 +107,85 @@ export default function ProductDetail() {
 
   if (isLoading)
     return (
-      <div className="container-base section-padding">
-        <p className="text-gray-600">Loading product...</p>
+      <div className="min-h-screen bg-white py-12">
+        <div className="container-base">
+          {/* Breadcrumb skeleton */}
+          <div className="flex items-center gap-2 mb-8">
+            <div className="h-4 w-12 bg-gray-200 rounded skeleton-shimmer" />
+            <span className="text-gray-300">/</span>
+            <div className="h-4 w-16 bg-gray-200 rounded skeleton-shimmer" />
+            <span className="text-gray-300">/</span>
+            <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Image skeleton */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="bg-gray-100 rounded-lg overflow-hidden h-64 sm:h-80 md:h-96 lg:h-auto lg:aspect-square skeleton-shimmer"
+            />
+
+            {/* Info skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="flex flex-col justify-between"
+            >
+              <div className="space-y-4">
+                <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer" />
+                <div className="h-8 w-3/4 bg-gray-200 rounded skeleton-shimmer" />
+                <div className="h-8 w-1/2 bg-gray-200 rounded skeleton-shimmer" />
+
+                {/* Rating skeleton */}
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="h-5 w-5 bg-gray-200 rounded skeleton-shimmer" />
+                    ))}
+                  </div>
+                  <div className="h-4 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                </div>
+
+                {/* Price skeleton */}
+                <div className="h-10 w-32 bg-gray-200 rounded skeleton-shimmer" />
+
+                {/* Description skeleton */}
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-gray-200 rounded skeleton-shimmer" />
+                  <div className="h-4 w-5/6 bg-gray-200 rounded skeleton-shimmer" />
+                  <div className="h-4 w-2/3 bg-gray-200 rounded skeleton-shimmer" />
+                </div>
+
+                {/* Specs skeleton */}
+                <div className="bg-ivory rounded-lg p-4">
+                  <div className="h-5 w-28 bg-gray-200 rounded skeleton-shimmer mb-3" />
+                  <div className="grid grid-cols-2 gap-4">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="space-y-1">
+                        <div className="h-3 w-14 bg-gray-200 rounded skeleton-shimmer" />
+                        <div className="h-4 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Button skeleton */}
+              <div className="space-y-3 mt-6">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-12 bg-gray-200 rounded-lg skeleton-shimmer" />
+                  <div className="h-10 w-12 bg-gray-200 rounded-lg skeleton-shimmer" />
+                  <div className="h-10 w-12 bg-gray-200 rounded-lg skeleton-shimmer" />
+                </div>
+                <div className="h-12 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+                <div className="h-12 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     )
 

@@ -41,14 +41,14 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <span className="text-rose-400 text-sm tracking-widest uppercase font-semibold">
+          <span className="text-gold text-sm tracking-widest uppercase font-semibold">
             Customer Stories
           </span>
           <h2 className="text-5xl md:text-6xl font-heading font-bold mt-4 mb-6">
             Loved by Women Everywhere
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            See how Wiggle has transformed the lives of thousands of confident women
+            See how AH&amp;M has transformed the lives of thousands of confident women
           </p>
         </motion.div>
 
@@ -108,7 +108,7 @@ export default function TestimonialsSection() {
                   {[...Array(5)].map((_, i) => (
                     <svg
                       key={i}
-                      className={`w-5 h-5 ${i < testimonial.rating ? 'text-rose-400' : 'text-slate-600'}`}
+                      className={`w-5 h-5 ${i < testimonial.rating ? 'text-gold' : 'text-slate-600'}`}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -126,7 +126,7 @@ export default function TestimonialsSection() {
                 <div>
                   <p className="font-bold text-white">{testimonial.name}</p>
                   {testimonial.title && (
-                    <p className="text-sm text-rose-400">{testimonial.title}</p>
+                    <p className="text-sm text-gold">{testimonial.title}</p>
                   )}
                 </div>
               </motion.div>

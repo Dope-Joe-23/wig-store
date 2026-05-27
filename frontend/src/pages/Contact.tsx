@@ -13,10 +13,9 @@ const fadeUp = {
 }
 
 const defaultSocials = [
-  { platform: 'Instagram', url: 'https://instagram.com/wiggle' },
-  { platform: 'Facebook', url: 'https://facebook.com/wiggle' },
-  { platform: 'Twitter', url: 'https://twitter.com/wiggle' },
-  { platform: 'TikTok', url: 'https://tiktok.com/@wiggle' },
+  { platform: 'Instagram', url: 'https://instagram.com/affordablehairandmoregh' },
+  { platform: 'Facebook', url: 'https://facebook.com/affordablehairandmoregh' },
+  { platform: 'TikTok', url: 'https://tiktok.com/@affordablehairandmoregh' },
 ]
 
 const platformIcons: Record<string, string> = {
@@ -61,7 +60,7 @@ export default function ContactPage() {
         <div className="absolute inset-0">
           <img
             src={getImageUrl(bannerImage)}
-            alt="Contact Wiggle"
+            alt="Contact AH&amp;M"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
@@ -73,14 +72,14 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <span className="text-rose-300 text-sm tracking-widest uppercase font-semibold">
+              <span className="text-gold text-sm tracking-widest uppercase font-semibold">
                 {page?.subtitle || "We'd Love to Hear From You"}
               </span>
               <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mt-4 mb-6">
                 {page?.title || 'Get in Touch'}
               </h1>
               <p className="text-gray-200 text-lg max-w-xl">
-                Have a question, need styling advice, or want to share your Wiggle story? We're here for you.
+                Have a question, need styling advice, or want to share your AH&amp;M story? We're here for you.
               </p>
             </motion.div>
           </div>
@@ -104,13 +103,13 @@ export default function ContactPage() {
                   {page?.email && (
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                       </div>
                       <div>
                         <p className="font-semibold text-slate-900">Email</p>
-                        <a href={`mailto:${page.email}`} className="text-gray-600 hover:text-rose-500 transition">
+                        <a href={`mailto:${page.email}`} className="text-gray-600 hover:text-gold-dark transition">
                           {page.email}
                         </a>
                       </div>
@@ -119,13 +118,13 @@ export default function ContactPage() {
                   {page?.phone && (
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
                       </div>
                       <div>
                         <p className="font-semibold text-slate-900">Phone</p>
-                        <a href={`tel:${page.phone}`} className="text-gray-600 hover:text-rose-500 transition">
+                        <a href={`tel:${page.phone}`} className="text-gray-600 hover:text-gold-dark transition">
                           {page.phone}
                         </a>
                       </div>
@@ -134,7 +133,7 @@ export default function ContactPage() {
                   {page?.address && (
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
@@ -148,7 +147,7 @@ export default function ContactPage() {
                   {page?.working_hours && (
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
@@ -175,7 +174,7 @@ export default function ContactPage() {
                         className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:border-rose-200 hover:bg-rose-50 transition group"
                       >
                         <span className="text-lg">{platformIcons[link.platform] || '🌐'}</span>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-rose-600">{link.platform}</span>
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-gold-dark">{link.platform}</span>
                       </a>
                     ))}
                   </div>
@@ -293,7 +292,7 @@ export default function ContactPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Wiggle Location"
+                title="AH&amp;M Location"
               />
             </div>
           </div>

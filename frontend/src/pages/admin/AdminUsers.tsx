@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AdminLayout } from '@components/admin/AdminLayout'
 import { apiClient } from '@services/api'
+import { motion } from 'framer-motion'
 
 interface User {
   id: number
@@ -67,8 +68,118 @@ export function AdminUsersPage() {
   if (loading) {
     return (
       <AdminLayout activeTab="users">
-        <div className="text-center py-12">
-          <p className="text-gray-600">Loading users...</p>
+        {/* Skeleton search + filter pills */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-between sm:items-center mb-4 sm:mb-6">
+          <div className="flex-1 min-w-0">
+            <div className="h-10 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+          </div>
+          <div className="flex gap-1 sm:gap-2">
+            {['All', 'Staff', 'Customers'].map((_, i) => (
+              <div key={i} className="h-8 w-16 sm:w-20 bg-gray-200 rounded-lg skeleton-shimmer" />
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop skeleton table */}
+        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                {['Name', 'Email', 'Role', 'Newsletter', 'Joined', 'Actions'].map((h, i) => (
+                  <th key={i} className="px-6 py-4 text-left">
+                    <div className="h-3 w-14 bg-gray-200 rounded skeleton-shimmer" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {[...Array(5)].map((_, i) => (
+                <motion.tr
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: i * 0.07, duration: 0.3 }}
+                  className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 skeleton-shimmer flex-shrink-0" />
+                      <div>
+                        <div className="h-4 w-32 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                        <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 w-40 bg-gray-200 rounded skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-6 w-16 bg-gray-200 rounded-full skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-6 w-20 bg-gray-200 rounded-full skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="h-6 w-20 bg-gray-200 rounded-lg skeleton-shimmer ml-auto" />
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile skeleton cards */}
+        <div className="md:hidden space-y-3 mb-6">
+          {[...Array(4)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08, duration: 0.3 }}
+              className="bg-white rounded-lg shadow p-4"
+            >
+              <div className="mb-3 pb-3 border-b border-gray-100">
+                <div className="flex justify-between items-start gap-2 mb-2">
+                  <div className="min-w-0">
+                    <div className="h-5 w-36 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                    <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                  </div>
+                  <div className="h-6 w-14 bg-gray-200 rounded-full skeleton-shimmer flex-shrink-0" />
+                </div>
+                <div className="h-3 w-44 bg-gray-200 rounded skeleton-shimmer" />
+              </div>
+              <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
+                <div>
+                  <div className="h-3 w-16 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                  <div className="h-4 w-20 bg-gray-200 rounded-full skeleton-shimmer" />
+                </div>
+                <div className="text-right">
+                  <div className="h-3 w-10 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                  <div className="h-4 w-14 bg-gray-200 rounded skeleton-shimmer" />
+                </div>
+              </div>
+              <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Skeleton stat cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.3 }}
+              className="bg-white rounded-lg shadow p-4 sm:p-5 lg:p-6"
+            >
+              <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer mb-2" />
+              <div className="h-7 w-12 bg-gray-200 rounded skeleton-shimmer" />
+            </motion.div>
+          ))}
         </div>
       </AdminLayout>
     )

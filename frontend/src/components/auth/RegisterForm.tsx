@@ -224,7 +224,7 @@ export function RegisterForm() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-heading font-bold text-black-primary mb-2">
-            Join Wiggle
+            Join AH&amp;M
           </h1>
           <p className="text-gray-600 mb-8">Create your account and start shopping</p>
 

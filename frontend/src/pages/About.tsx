@@ -67,7 +67,7 @@ export default function AboutPage() {
         <div className="absolute inset-0">
           <img
             src={getImageUrl(storyImage)}
-            alt="About Wiggle"
+            alt="About AH&amp;M"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
@@ -79,11 +79,11 @@ export default function AboutPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <span className="text-rose-300 text-sm tracking-widest uppercase font-semibold">
+              <span className="text-gold text-sm tracking-widest uppercase font-semibold">
                 {page?.subtitle || 'Discover Our Story'}
               </span>
               <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mt-4 mb-6">
-                {page?.title || 'About Wiggle'}
+                {page?.title || 'About AH&M'}
               </h1>
               <Link
                 to="/products"
@@ -109,14 +109,14 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <span className="text-rose-500 text-sm tracking-widest uppercase font-semibold">Our Story</span>
+              <span className="text-gold-dark text-sm tracking-widest uppercase font-semibold">Our Story</span>
               <h2 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 mt-3 mb-6">
-                {page?.story_title || 'The Wiggle Journey'}
+                {page?.story_title || 'The AH&M Journey'}
               </h2>
               <div className="prose prose-lg text-gray-600 max-w-none">
                 <p>
                   {page?.story_content || 
-                    'Wiggle was born from a simple belief: every woman deserves to feel confident, beautiful, and unapologetically herself. Founded by a team of hairstylists and entrepreneurs who saw a gap in the market for premium-quality wigs that didn\'t compromise on style or comfort, Wiggle has grown from a small boutique into a trusted name in luxury hair.'
+                    'AH&M was born from a simple belief: every woman deserves to feel confident, beautiful, and unapologetically herself. Founded by a team of hairstylists and entrepreneurs who saw a gap in the market for premium-quality wigs that didn\'t compromise on style or comfort, AH&M has grown from a small boutique into a trusted name in luxury hair.'
                   }
                 </p>
               </div>
@@ -186,7 +186,7 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="order-1 lg:order-2"
             >
-              <span className="text-rose-300 text-sm tracking-widest uppercase font-semibold">Our Mission</span>
+              <span className="text-gold-dark text-sm tracking-widest uppercase font-semibold">Our Mission</span>
               <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mt-3 mb-6">
                 {page?.mission_title || 'Empowering Through Elegance'}
               </h2>
@@ -219,7 +219,7 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-rose-500 text-sm tracking-widest uppercase font-semibold">What We Stand For</span>
+            <span className="text-gold-dark text-sm tracking-widest uppercase font-semibold">What We Stand For</span>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 mt-3 mb-4">
               Our Core Values
             </h2>
@@ -240,7 +240,7 @@ export default function AboutPage() {
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="w-14 h-14 bg-rose-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-rose-100 transition">
-                  <svg className="w-7 h-7 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-7 h-7 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -263,12 +263,12 @@ export default function AboutPage() {
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">
               Ready to Find Your Perfect Look?
             </h2>
-            <p className="text-rose-100 text-lg max-w-2xl mx-auto mb-10">
-              Explore our collection of premium wigs and discover the confidence that comes with wearing Wiggle.
+            <p className="text-gold text-lg max-w-2xl mx-auto mb-10">
+              Explore our collection of premium wigs and discover the confidence that comes with wearing AH&amp;M.
             </p>
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 px-10 py-4 bg-white text-rose-600 rounded-lg hover:bg-rose-50 transition font-bold text-lg shadow-xl"
+              className="inline-flex items-center gap-2 px-10 py-4 bg-white text-gold rounded-lg hover:bg-gold/10 transition font-bold text-lg shadow-xl"
             >
               Shop the Collection
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

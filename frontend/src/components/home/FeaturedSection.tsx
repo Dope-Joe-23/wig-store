@@ -65,7 +65,7 @@ export default function FeaturedSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <span className="text-rose-500 text-sm tracking-widest uppercase font-semibold">
+          <span className="text-gold-dark text-sm tracking-widest uppercase font-semibold">
             Curated Collections
           </span>
           <h2 className="text-5xl md:text-6xl font-heading font-bold text-slate-900 mt-4 mb-6">
@@ -147,7 +147,7 @@ export default function FeaturedSection() {
                   {item.title || item.product_name || 'Featured Item'}
                 </h3>
                 {item.product_price && (
-                  <p className="text-rose-500 text-lg font-bold">GHS {item.product_price}</p>
+                  <p className="text-gold-dark text-lg font-bold">GHS {item.product_price}</p>
                 )}
               </motion.div>
             </motion.div>

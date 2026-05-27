@@ -93,9 +93,17 @@ export interface Order {
 
 export interface OrderItem {
   id: number
-  product: Product
+  product: number
+  product_name: string
+  product_detail: {
+    id: number
+    name: string
+    slug: string
+    price: string
+    primary_image: { url: string } | null
+  } | null
   quantity: number
-  price: number
+  price: string
 }
 
 export interface Review {

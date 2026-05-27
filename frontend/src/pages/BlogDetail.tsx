@@ -45,10 +45,61 @@ export default function BlogDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50 py-24">
-        <div className="container-base">
-          <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50">
+        {/* Hero skeleton */}
+        <div className="relative h-[40vh] md:h-[50vh] bg-gray-200 overflow-hidden skeleton-shimmer">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" />
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute bottom-0 left-0 right-0 p-6 md:p-12 container-base"
+          >
+            <div className="h-5 w-28 bg-white/30 rounded-full skeleton-shimmer mb-4" />
+            <div className="h-10 w-3/4 bg-white/20 rounded skeleton-shimmer mb-4" />
+            <div className="h-10 w-1/2 bg-white/20 rounded skeleton-shimmer mb-4" />
+            <div className="flex gap-4">
+              <div className="h-4 w-24 bg-white/20 rounded skeleton-shimmer" />
+              <div className="h-4 w-20 bg-white/20 rounded skeleton-shimmer" />
+              <div className="h-4 w-28 bg-white/20 rounded skeleton-shimmer" />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Breadcrumb skeleton */}
+        <div className="container-base py-4">
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-12 bg-gray-200 rounded skeleton-shimmer" />
+            <span className="text-gray-300">/</span>
+            <div className="h-4 w-10 bg-gray-200 rounded skeleton-shimmer" />
+            <span className="text-gray-300">/</span>
+            <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer" />
+          </div>
+        </div>
+
+        {/* Content skeleton */}
+        <div className="container-base pb-20">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              <div className="h-6 w-full bg-gray-200 rounded skeleton-shimmer" />
+              <div className="h-6 w-5/6 bg-gray-200 rounded skeleton-shimmer" />
+              <div className="h-6 w-2/3 bg-gray-200 rounded skeleton-shimmer" />
+              <div className="h-4 w-full bg-gray-100 rounded skeleton-shimmer mt-6" />
+              <div className="h-4 w-full bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-4 w-4/5 bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-4 w-full bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-4 w-3/4 bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-8 w-1/2 bg-gray-200 rounded skeleton-shimmer mt-8" />
+              <div className="h-4 w-full bg-gray-100 rounded skeleton-shimmer mt-4" />
+              <div className="h-4 w-full bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-4 w-5/6 bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-4 w-full bg-gray-100 rounded skeleton-shimmer" />
+              <div className="h-4 w-2/3 bg-gray-100 rounded skeleton-shimmer" />
+            </motion.div>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { AdminLayout } from '@components/admin/AdminLayout'
 import { apiClient } from '@services/api'
 import { CloseIcon } from '@components/Icons'
+import { motion } from 'framer-motion'
 
 interface Order {
   id: number
@@ -95,8 +96,89 @@ export function AdminOrdersPage() {
   if (loading) {
     return (
       <AdminLayout activeTab="orders">
-        <div className="text-center py-12">
-          <p className="text-gray-600">Loading orders...</p>
+        {/* Skeleton filter pills */}
+        <div className="mb-4 sm:mb-6 flex gap-1 sm:gap-2 flex-wrap">
+          {['all', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((_, i) => (
+            <div key={i} className="h-8 w-16 sm:w-20 bg-gray-200 rounded-lg skeleton-shimmer" />
+          ))}
+        </div>
+
+        {/* Desktop skeleton table */}
+        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                {['Order #', 'Customer', 'Total', 'Status', 'Payment', 'Date'].map((h, i) => (
+                  <th key={i} className="px-6 py-4 text-left">
+                    <div className="h-3 w-16 bg-gray-200 rounded skeleton-shimmer" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {[...Array(6)].map((_, i) => (
+                <motion.tr
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: i * 0.06, duration: 0.3 }}
+                  className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}
+                >
+                  <td className="px-6 py-4">
+                    <div className="h-5 w-24 bg-gray-200 rounded skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 w-32 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                    <div className="h-3 w-24 bg-gray-200 rounded skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 w-16 bg-gray-200 rounded skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-6 w-20 bg-gray-200 rounded-full skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-6 w-16 bg-gray-200 rounded-full skeleton-shimmer" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile skeleton cards */}
+        <div className="md:hidden space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08, duration: 0.3 }}
+              className="bg-white rounded-lg shadow p-4 border-l-4 border-gray-200"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <div className="h-5 w-28 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                  <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                </div>
+                <div className="h-6 w-16 bg-gray-200 rounded-full skeleton-shimmer" />
+              </div>
+              <div className="mb-2 pb-2 border-b border-gray-100">
+                <div className="h-4 w-36 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                <div className="h-3 w-40 bg-gray-200 rounded skeleton-shimmer" />
+              </div>
+              <div className="flex justify-between items-center">
+                <div>
+                  <div className="h-3 w-12 bg-gray-200 rounded skeleton-shimmer mb-1" />
+                  <div className="h-6 w-16 bg-gray-200 rounded skeleton-shimmer" />
+                </div>
+                <div className="h-6 w-14 bg-gray-200 rounded-full skeleton-shimmer" />
+              </div>
+            </motion.div>
+          ))}
         </div>
       </AdminLayout>
     )
@@ -314,20 +396,37 @@ export function AdminOrdersPage() {
                     {selectedOrder.payment_status}
                   </span>
                 </div>
-              </div>
-
-              {/* Order Items */}
-              <div className="mb-4">
-                <h4 className="font-semibold text-sm text-black-primary mb-2">Items</h4>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {selectedOrder.items?.map((item, idx) => (
-                    <div key={idx} className="text-xs text-gray-700 pb-2 border-b border-gray-100">
-                      <p className="font-semibold">{item.product_name || 'Product'} x{item.quantity}</p>
-                      <p className="text-gray-600">GHS {parseFloat(item.price).toFixed(2)}</p>
-                    </div>
-                  ))}
+              </div>                {/* Order Items */}
+                <div className="mb-4">
+                  <h4 className="font-semibold text-sm text-black-primary mb-2">Items</h4>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {selectedOrder.items?.map((item, idx) => {
+                      const prodDetail = item.product_detail
+                      const imgUrl = prodDetail?.primary_image?.url
+                      const prodName = prodDetail?.name || item.product_name || `Product #${item.product || item.id}`
+                      return (
+                        <div key={idx} className="flex items-center gap-3 pb-2 border-b border-gray-100">
+                          {imgUrl ? (
+                            <img
+                              src={imgUrl}
+                              alt={prodName}
+                              className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-200"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-gray-900 truncate">{prodName}</p>
+                            <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          </div>
+                          <p className="text-xs font-semibold text-gray-900 flex-shrink-0">GHS {parseFloat(item.price).toFixed(2)}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
 
               {/* Status Update */}
               <div>
@@ -377,12 +476,31 @@ export function AdminOrdersPage() {
               <div className="mb-4 sm:mb-6">
                 <h4 className="font-semibold text-sm sm:text-base text-black-primary mb-2">Items</h4>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {selectedOrder.items?.map((item, idx) => (
-                    <div key={idx} className="text-xs sm:text-sm text-gray-700 pb-2 border-b border-gray-100">
-                      <p>{item.product_name || 'Product'} x{item.quantity}</p>
-                      <p className="text-gray-600">GHS {parseFloat(item.price).toFixed(2)}</p>
-                    </div>
-                  ))}
+                  {selectedOrder.items?.map((item, idx) => {
+                    const prodDetail = item.product_detail
+                    const imgUrl = prodDetail?.primary_image?.url
+                    const prodName = prodDetail?.name || item.product_name || `Product #${item.product || item.id}`
+                    return (
+                      <div key={idx} className="flex items-center gap-3 pb-2 border-b border-gray-100">
+                        {imgUrl ? (
+                          <img
+                            src={imgUrl}
+                            alt={prodName}
+                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-200"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{prodName}</p>
+                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                        </div>
+                        <p className="text-sm font-semibold text-gray-900 flex-shrink-0">GHS {parseFloat(item.price).toFixed(2)}</p>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
 

@@ -3,6 +3,7 @@ import certifi
 import smtplib
 import logging
 import time
+import socket
 
 from django.conf import settings
 from django.core.mail.backends.smtp import EmailBackend
@@ -26,10 +27,27 @@ class CertifiEmailBackend(EmailBackend):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Get timeout from settings, default to 30 seconds
-        self.timeout = getattr(settings, 'EMAIL_TIMEOUT', 30)
+        
+        # Get timeout from settings, default to 45 seconds (increased for SSL handshake)
+        self.timeout = getattr(settings, 'EMAIL_TIMEOUT', 45)
         self.max_retries = 3
-        self.retry_delay = 2  # seconds
+        self.retry_delay = 5  # seconds - increased from 2 to avoid Gmail rate limiting
+        
+        # Strip whitespace from credentials (Gmail app passwords have spaces)
+        if self.username:
+            self.username = self.username.strip()
+        if self.password:
+            self.password = self.password.strip()
+        
+        # Ensure EMAIL_USE_SSL is properly set (Django might not read it by default)
+        # Port 465 requires SSL; port 587 uses STARTTLS
+        if self.port == 465 and not self.use_ssl:
+            self.use_ssl = True
+            self.use_tls = False
+        
+        logger.debug(f'Email backend initialized: host={self.host}, port={self.port}, '
+                    f'use_tls={self.use_tls}, use_ssl={self.use_ssl}, '
+                    f'username={self.username[:5] if self.username else "None"}..., timeout={self.timeout}s')
 
     @cached_property
     def ssl_context(self):
@@ -56,7 +74,17 @@ class CertifiEmailBackend(EmailBackend):
         Handles "Connection unexpectedly closed" and SSL certificate errors gracefully.
         """
         if self.connection is not None:
-            return False
+            try:
+                # Test the existing connection
+                self.connection.noop()
+                return False
+            except Exception:
+                # Connection is dead, close and reconnect
+                try:
+                    self.connection.close()
+                except Exception:
+                    pass
+                self.connection = None
 
         connection_kwargs = {
             'timeout': self.timeout,
@@ -64,7 +92,10 @@ class CertifiEmailBackend(EmailBackend):
 
         for attempt in range(self.max_retries):
             try:
+                logger.debug(f'SMTP connection attempt {attempt + 1}/{self.max_retries} to {self.host}:{self.port}')
+                
                 if self.use_ssl:
+                    logger.debug(f'Connecting with SMTP_SSL (port {self.port})...')
                     self.connection = smtplib.SMTP_SSL(
                         self.host,
                         self.port,
@@ -72,39 +103,82 @@ class CertifiEmailBackend(EmailBackend):
                         **connection_kwargs
                     )
                 else:
+                    logger.debug(f'Connecting with SMTP (port {self.port})...')
                     self.connection = smtplib.SMTP(
                         self.host,
                         self.port,
                         **connection_kwargs
                     )
                     if self.use_tls:
+                        logger.debug(f'Initiating STARTTLS...')
                         self.connection.starttls(context=self.ssl_context)
 
+                logger.debug(f'Attempting authentication as {self.username}...')
                 if self.username:
                     self.connection.login(self.username, self.password)
-
-                logger.debug(f'SMTP connection established to {self.host}:{self.port}')
+                
+                logger.info(f'✓ SMTP connection successfully established to {self.host}:{self.port}')
                 return True
 
-            except (smtplib.SMTPException, OSError, ssl.SSLError) as e:
-                logger.warning(
-                    f'SMTP connection attempt {attempt + 1}/{self.max_retries} failed: {e}'
-                )
+            except smtplib.SMTPAuthenticationError as e:
+                logger.error(f'SMTP Authentication failed for {self.username}: {e}')
                 if self.connection is not None:
                     try:
-                        self.connection.quit()
+                        self.connection.close()
                     except Exception:
                         pass
                     self.connection = None
+                # Don't retry on auth errors - they won't succeed on retry
+                raise
 
+            except smtplib.SMTPException as e:
+                logger.warning(f'SMTP error on attempt {attempt + 1}/{self.max_retries}: {e}')
+                if self.connection is not None:
+                    try:
+                        self.connection.close()
+                    except Exception:
+                        pass
+                    self.connection = None
+                
                 if attempt < self.max_retries - 1:
-                    logger.info(f'Retrying SMTP connection in {self.retry_delay}s...')
-                    time.sleep(self.retry_delay)
+                    wait_time = self.retry_delay * (attempt + 1)
+                    logger.info(f'Retrying SMTP connection in {wait_time}s...')
+                    time.sleep(wait_time)
                 else:
-                    logger.error(
-                        f'Failed to establish SMTP connection after {self.max_retries} attempts: {e}'
-                    )
+                    logger.error(f'SMTP error after {self.max_retries} attempts: {e}')
+                    raise
+
+            except (OSError, socket.error, ssl.SSLError) as e:
+                logger.warning(f'Connection error on attempt {attempt + 1}/{self.max_retries}: {type(e).__name__}: {e}')
+                if self.connection is not None:
+                    try:
+                        self.connection.close()
+                    except Exception:
+                        pass
+                    self.connection = None
+                
+                if attempt < self.max_retries - 1:
+                    wait_time = self.retry_delay * (attempt + 1)
+                    logger.info(f'Retrying SMTP connection in {wait_time}s...')
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f'Failed to establish SMTP connection after {self.max_retries} attempts: {e}')
                     raise
 
         return False
+
+    def close(self):
+        """Close the SMTP connection gracefully."""
+        if self.connection is None:
+            return
+        try:
+            try:
+                self.connection.quit()
+            except (smtplib.SMTPServerDisconnected, OSError):
+                # Server disconnected already, just close the socket
+                self.connection.close()
+        except Exception as e:
+            logger.warning(f'Error closing SMTP connection: {e}')
+        finally:
+            self.connection = None
 

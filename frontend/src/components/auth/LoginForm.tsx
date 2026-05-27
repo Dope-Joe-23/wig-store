@@ -130,7 +130,7 @@ export function LoginForm() {
           <h1 className="text-3xl font-heading font-bold text-black-primary mb-2">
             Welcome Back
           </h1>
-          <p className="text-gray-600 mb-8">Sign in to your Wiggle account</p>
+          <p className="text-gray-600 mb-8">Sign in to your AH&amp;M account</p>
 
           {apiError && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">

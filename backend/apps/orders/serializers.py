@@ -1,7 +1,7 @@
 from django.db import models, transaction
 from rest_framework import serializers
 from .models import Order, OrderItem
-from apps.products.models import Product
+from apps.products.models import Product, ProductMedia
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -15,12 +15,35 @@ class UserBriefSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class ProductBriefSerializer(serializers.ModelSerializer):
+    """Minimal product details embedded in order items"""
+    primary_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'slug', 'price', 'primary_image']
+
+    def get_primary_image(self, obj):
+        primary = obj.media.filter(is_primary=True).first()
+        if primary:
+            url = primary.url or (primary.file.url if primary.file else None)
+            if url:
+                return {'url': url}
+        first = obj.media.first()
+        if first:
+            url = first.url or (first.file.url if first.file else None)
+            if url:
+                return {'url': url}
+        return None
+
+
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
+    product_detail = ProductBriefSerializer(source='product', read_only=True)
     
     class Meta:
         model = OrderItem
-        fields = ['id', 'product', 'product_name', 'quantity', 'price']
+        fields = ['id', 'product', 'product_name', 'product_detail', 'quantity', 'price']
 
 
 class OrderSerializer(serializers.ModelSerializer):

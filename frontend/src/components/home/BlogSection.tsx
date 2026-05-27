@@ -54,7 +54,7 @@ export default function BlogSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-14"
         >
-          <span className="text-rose-500 text-sm tracking-widest uppercase font-semibold">
+          <span className="text-gold-dark text-sm tracking-widest uppercase font-semibold">
             Our Blog
           </span>
           <h2 className="text-5xl md:text-6xl font-heading font-bold text-slate-900 mt-4 mb-4">
@@ -132,9 +132,9 @@ export default function BlogSection() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-heading font-bold text-xl text-slate-900 mb-3 line-clamp-2 group-hover:text-rose-600 transition-colors">
+                  <h3 className="font-heading font-bold text-xl text-slate-900 mb-3 line-clamp-2 group-hover:text-gold-dark transition-colors">
                     {post.external_link ? (
-                      <a href={post.external_link} target="_blank" rel="noopener noreferrer" className="hover:text-rose-600">
+                      <a href={post.external_link} target="_blank" rel="noopener noreferrer" className="hover:text-gold-dark">
                         {post.title}
                       </a>
                     ) : post.title}
@@ -154,7 +154,7 @@ export default function BlogSection() {
                         href={post.external_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-rose-500 font-semibold text-sm hover:text-rose-600 transition-colors"
+                        className="inline-flex items-center gap-2 text-gold-dark font-semibold text-sm hover:text-gold-dark transition-colors"
                       >
                         Read Full Article
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@ export default function BlogSection() {
                     ) : (
                       <Link
                         to={`/blog/${post.id}`}
-                        className="inline-flex items-center gap-2 text-rose-500 font-semibold text-sm hover:text-rose-600 transition-colors"
+                        className="inline-flex items-center gap-2 text-gold-dark font-semibold text-sm hover:text-gold-dark transition-colors"
                       >
                         Read More
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

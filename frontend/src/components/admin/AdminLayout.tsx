@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
 import { UserAvatar } from '@components/UserAvatar'
 import { DashboardIcon, ProductsIcon, AdminOrdersIcon, UsersIconComponent, CustomizationIcon, CloseIcon, StoreIcon, LockIcon } from '@components/Icons'
+import logoUrl from '../../../Affordable_logo.jpeg'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -106,9 +107,16 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
       >
         {/* Logo */}
         <div className="p-4 lg:p-6 border-b border-gray-700">
-          <h1 className="text-xl lg:text-2xl font-heading font-bold">
-            Wiggle Admin
-          </h1>
+          <div className="flex items-center gap-3">
+            <div className="relative flex-shrink-0">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-rose-nude/30 to-transparent blur-sm" />
+              <img src={logoUrl} alt="" className="relative h-10 w-10 rounded-full object-cover ring-2 ring-rose-nude/20 bg-white" />
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-base lg:text-lg font-heading font-bold">AH&amp;M</span>
+              <span className="text-[9px] lg:text-[10px] tracking-[0.15em] text-gray-400 uppercase font-medium">Admin</span>
+            </div>
+          </div>
         </div>
 
         {/* Navigation */}
@@ -222,8 +230,14 @@ export function AdminLayout({ children, activeTab }: AdminLayoutProps) {
         }`}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-gray-700 flex items-center justify-between">
-          <h1 className="text-xl font-heading font-bold">Wiggle Admin</h1>
+        <div className="p-4 border-b border-gray-700 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <img src={logoUrl} alt="" className="h-9 w-9 rounded-full object-cover ring-2 ring-rose-nude/20 bg-white flex-shrink-0" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-base font-heading font-bold">AH&amp;M</span>
+              <span className="text-[9px] tracking-[0.15em] text-gray-400 uppercase font-medium">Admin</span>
+            </div>
+          </div>
           <button
             onClick={() => setMobileMenuOpen(false)}
             className="p-1 hover:bg-gray-800 rounded"

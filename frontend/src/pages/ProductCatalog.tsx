@@ -1,9 +1,38 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { productService, type Product, type Category } from '@services/products'
 import { getImageUrl } from '@utils/helpers'
 import { SearchIcon, FilterIcon, CloseIcon } from '@components/Icons'
 import { useDebounce } from '@hooks/useDebounce'
+
+function CatalogSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: i * 0.08 }}
+          className="bg-white rounded-lg overflow-hidden shadow-md"
+        >
+          <div className="bg-gray-200 h-56 skeleton-shimmer" />
+          <div className="p-3 space-y-2">
+            <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+            <div className="h-4 w-3/4 bg-gray-200 rounded skeleton-shimmer" />
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, s) => (
+                <div key={s} className="h-3 w-3 bg-gray-200 rounded skeleton-shimmer" />
+              ))}
+            </div>
+            <div className="h-5 w-1/3 bg-gray-200 rounded skeleton-shimmer" />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 
 export default function ProductCatalog() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -435,10 +464,7 @@ export default function ProductCatalog() {
             )}
 
             {loading ? (
-              <div className="text-center py-12">
-                <div className="w-8 h-8 border-2 border-rose-nude border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-gray-600 text-sm">Loading products...</p>
-              </div>
+              <CatalogSkeleton />
             ) : products.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">

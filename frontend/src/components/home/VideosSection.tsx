@@ -57,7 +57,7 @@ export default function VideosSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <span className="text-rose-500 text-sm tracking-widest uppercase font-semibold">
+          <span className="text-gold-dark text-sm tracking-widest uppercase font-semibold">
             Video Library
           </span>
           <h2 className="text-5xl md:text-6xl font-heading font-bold text-slate-900 mt-4 mb-4">
@@ -83,8 +83,8 @@ export default function VideosSection() {
                 onClick={() => setActiveCategory(cat)}
                 className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                   activeCategory === cat
-                    ? 'bg-rose-500 text-white shadow-lg shadow-rose-200'
-                    : 'bg-white text-gray-700 hover:bg-rose-50 hover:text-rose-600 border border-gray-200'
+                    ? 'bg-rose-nude text-white shadow-lg shadow-rose-200'
+                    : 'bg-white text-gray-700 hover:bg-rose-nude/10 hover:text-rose-nude border border-gray-200'
                 }`}
               >
                 {cat === 'all' ? '🎥 All Videos' : `${categoryIcons[cat] || '🎬'} ${categoryLabels[cat] || cat}`}
@@ -201,7 +201,7 @@ export default function VideosSection() {
 
                 {/* Info */}
                 <div className="p-5">
-                  <h3 className="font-heading font-bold text-lg text-slate-900 mb-2 line-clamp-2 group-hover:text-rose-600 transition-colors">
+                  <h3 className="font-heading font-bold text-lg text-slate-900 mb-2 line-clamp-2 group-hover:text-gold-dark transition-colors">
                     {video.title}
                   </h3>
                   {video.description && (
@@ -281,7 +281,7 @@ export default function VideosSection() {
               {/* Video Info */}
               <div className="bg-white p-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-sm font-semibold text-rose-500 bg-rose-50 px-3 py-1 rounded-full">
+                  <span className="text-sm font-semibold text-gold-dark bg-gold/10 px-3 py-1 rounded-full">
                     {categoryIcons[activeVideo.category]} {categoryLabels[activeVideo.category] || activeVideo.category}
                   </span>
                   {activeVideo.duration && (

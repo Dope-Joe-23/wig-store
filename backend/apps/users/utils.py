@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils import timezone
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ def send_otp_email(email: str, code: str, purpose: str = 'login') -> bool:
     subject = 'Your Wiggle Verification Code'
     purpose_label = 'Sign In' if purpose == 'login' else 'Email Verification'
     max_retries = 3
+    initial_retry_delay = 5  # seconds
 
     for attempt in range(max_retries):
         try:
@@ -41,7 +43,7 @@ def send_otp_email(email: str, code: str, purpose: str = 'login') -> bool:
                 html_message=html_message,
                 fail_silently=False,
             )
-            logger.info(f'OTP email sent to {email} for {purpose}')
+            logger.info(f'OTP email sent successfully to {email} for {purpose}')
             return True
         except Exception as e:
             error_msg = str(e)
@@ -60,11 +62,14 @@ def send_otp_email(email: str, code: str, purpose: str = 'login') -> bool:
                 break
 
             if attempt < max_retries - 1:
-                logger.debug(f'Retrying email send in 2 seconds...')
-                import time
-                time.sleep(2)
+                # Exponential backoff: 5s, 10s, 15s
+                wait_time = initial_retry_delay * (attempt + 1)
+                logger.info(f'Retrying email send in {wait_time}s (attempt {attempt + 1}/{max_retries})...')
+                time.sleep(wait_time)
             else:
                 logger.error(f'Failed to send OTP email to {email} after {max_retries} attempts: {error_msg}')
+
+    return False
 
     return False
 

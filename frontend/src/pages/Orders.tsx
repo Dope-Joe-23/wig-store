@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
 import { useCartStore } from '@stores/cartStore'
 import { formatCurrency, getImageUrl, getApiErrorMessage } from '@utils/helpers'
+import { motion } from 'framer-motion'
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -137,15 +138,18 @@ export function OrdersPage() {
 
   const handleReorder = (order: Order) => {
     order.items.forEach((item) => {
-      const product = item.product
-      if (!product) return
+      const detail = item.product_detail
+      if (!detail) {
+        console.warn('Reorder skipped item #' + item.id + ': no product_detail available')
+        return
+      }
       addToCart({
-        id: product.id,
-        name: product.name || `Product #${product.id}`,
+        id: detail.id,
+        name: detail.name || item.product_name || `Product #${item.product}`,
         price: Number(item.price),
         quantity: item.quantity,
-        image: product.primary_image?.url || '',
-        slug: product.slug || '',
+        image: detail.primary_image?.url || '',
+        slug: detail.slug || '',
       })
     })
     showToast('Items added to your cart!', 'success')
@@ -232,9 +236,51 @@ export function OrdersPage() {
 
           {/* Content States */}
           {loading ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <div className="w-12 h-12 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-gray-500">Loading orders...</p>
+            <div className="space-y-4">
+              {/* Skeleton filter tabs */}
+              <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                {[...Array(7)].map((_, i) => (
+                  <div key={i} className="h-9 w-24 bg-gray-200 rounded-full flex-shrink-0 skeleton-shimmer" />
+                ))}
+              </div>
+              {/* Skeleton search bar */}
+              <div className="h-12 bg-gray-200 rounded-lg mb-6 skeleton-shimmer" />
+              {/* Skeleton order cards */}
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.08, duration: 0.3 }}
+                    className="bg-white rounded-lg shadow-md p-4 sm:p-6"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2.5">
+                          <div className="h-5 w-32 bg-gray-200 rounded skeleton-shimmer" />
+                          <div className="h-5 w-16 bg-gray-200 rounded-full skeleton-shimmer" />
+                          <div className="h-5 w-12 bg-gray-200 rounded-full skeleton-shimmer" />
+                        </div>
+                        <div className="h-3 w-40 bg-gray-200 rounded skeleton-shimmer" />
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="space-y-1 text-right">
+                          <div className="h-6 w-20 bg-gray-200 rounded skeleton-shimmer" />
+                          <div className="h-3 w-14 bg-gray-200 rounded skeleton-shimmer ml-auto" />
+                        </div>
+                        <div className="h-5 w-5 bg-gray-200 rounded skeleton-shimmer" />
+                      </div>
+                    </div>
+                    {/* Item previews */}
+                    <div className="flex gap-2 mt-4">
+                      {[...Array(4)].map((_, j) => (
+                        <div key={j} className="w-10 h-10 bg-gray-200 rounded-lg skeleton-shimmer" />
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           ) : error ? (
             <div className="bg-white rounded-lg shadow-md p-12 text-center">
@@ -341,10 +387,10 @@ export function OrdersPage() {
                           <div className="flex gap-3 overflow-x-auto pb-1">
                             {order.items.slice(0, 5).map((item) => (
                               <div key={item.id} className="flex-shrink-0 w-14 h-14 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                                {item.product?.primary_image?.url ? (
+                                {item.product_detail?.primary_image?.url ? (
                                   <img
-                                    src={getImageUrl(item.product.primary_image.url)}
-                                    alt={item.product.name}
+                                    src={getImageUrl(item.product_detail.primary_image.url)}
+                                    alt={item.product_detail?.name || item.product_name || 'Product image'}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
@@ -396,10 +442,10 @@ export function OrdersPage() {
                             {order.items.map((item) => (
                               <div key={item.id} className="flex items-center gap-4 py-3">
                                 <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
-                                  {item.product?.primary_image?.url ? (
+                                  {item.product_detail?.primary_image?.url ? (
                                     <img
-                                      src={getImageUrl(item.product.primary_image.url)}
-                                      alt={item.product.name}
+                                      src={getImageUrl(item.product_detail.primary_image.url)}
+                                      alt={item.product_detail.name}
                                       className="w-full h-full object-cover"
                                     />
                                   ) : (
@@ -410,7 +456,7 @@ export function OrdersPage() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-sm font-medium text-black-primary truncate">
-                                    {item.product?.name || `Product #${item.product?.id || item.id}`}
+                                    {item.product_detail?.name || item.product_name || `Product #${item.product}`}
                                   </p>
                                   <p className="text-sm text-gray-500">
                                     Qty: {item.quantity} × {formatCurrency(Number(item.price))}

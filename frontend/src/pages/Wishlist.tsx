@@ -1,11 +1,40 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuthStore } from '@stores/authStore'
 import { useWishlistStore } from '@stores/wishlistStore'
 import { wishlistService } from '@services/wishlist'
 import { productService } from '@services/products'
 import { Product } from '@/types/index'
 import ProductCard from '@components/products/ProductCard'
+
+function WishlistSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: i * 0.05 }}
+          className="bg-white rounded-lg overflow-hidden shadow-md"
+        >
+          <div className="bg-gray-200 h-56 skeleton-shimmer" />
+          <div className="p-3 space-y-2">
+            <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+            <div className="h-4 w-3/4 bg-gray-200 rounded skeleton-shimmer" />
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, s) => (
+                <div key={s} className="h-3 w-3 bg-gray-200 rounded skeleton-shimmer" />
+              ))}
+            </div>
+            <div className="h-5 w-1/3 bg-gray-200 rounded skeleton-shimmer" />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 
 export function WishlistPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -61,10 +90,7 @@ export function WishlistPage() {
           </div>
 
           {loading ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <div className="w-12 h-12 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-gray-500">Loading wishlist...</p>
-            </div>
+            <WishlistSkeleton />
           ) : products.length === 0 ? (
             <div className="bg-white rounded-lg shadow-md p-12 text-center">
               <p className="text-5xl mb-4">❤️</p>

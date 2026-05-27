@@ -377,7 +377,7 @@ function AboutPageForm({ onSaved }: { onSaved: () => void }) {
   const [success, setSuccess] = useState<string | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
   const [form, setForm] = useState({
-    title: 'About Wiggle',
+    title: 'About Affordable Hair and More',
     subtitle: '',
     story_title: 'Our Story',
     story_content: '',
@@ -402,7 +402,7 @@ function AboutPageForm({ onSaved }: { onSaved: () => void }) {
         setPage(data)
         if (data) {
           setForm({
-            title: data.title || 'About Wiggle',
+            title: data.title || 'About Affordable Hair and More',
             subtitle: data.subtitle || '',
             story_title: data.story_title || 'Our Story',
             story_content: data.story_content || '',
@@ -466,7 +466,65 @@ function AboutPageForm({ onSaved }: { onSaved: () => void }) {
     }
   }
 
-  if (loading) return <div className="text-center py-12 text-gray-600">Loading...</div>
+  if (loading) return (
+    <div className="bg-white rounded-lg shadow p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="h-2.5 w-28 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-2.5 w-20 bg-gray-200 rounded skeleton-shimmer" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-16 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+      <hr className="border-gray-200" />
+      <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <div className="h-3 w-24 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-24 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <div className="space-y-2">
+        <div className="h-3 w-32 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <hr className="border-gray-200" />
+      <div className="h-4 w-28 bg-gray-200 rounded skeleton-shimmer" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <div className="h-3 w-28 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-24 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <div className="space-y-2">
+        <div className="h-3 w-36 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <div className="h-10 w-36 bg-gray-200 rounded-lg skeleton-shimmer" />
+    </div>
+  )
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg shadow p-6">
@@ -689,7 +747,67 @@ function ContactPageForm({ onSaved }: { onSaved: () => void }) {
     }
   }
 
-  if (loading) return <div className="text-center py-12 text-gray-600">Loading...</div>
+  if (loading) return (
+    <div className="bg-white rounded-lg shadow p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="h-2.5 w-28 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-2.5 w-20 bg-gray-200 rounded skeleton-shimmer" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-16 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+      <hr className="border-gray-200" />
+      <div className="h-4 w-28 bg-gray-200 rounded skeleton-shimmer" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-12 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-14 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <div className="h-3 w-16 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-20 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <div className="space-y-2">
+        <div className="h-3 w-24 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-20 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <hr className="border-gray-200" />
+      <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-20 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-24 bg-gray-200 rounded skeleton-shimmer" />
+          <div className="h-9 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+      <hr className="border-gray-200" />
+      <div className="h-4 w-20 bg-gray-200 rounded skeleton-shimmer" />
+      <hr className="border-gray-200" />
+      <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer" />
+      <div className="space-y-2">
+        <div className="h-3 w-32 bg-gray-200 rounded skeleton-shimmer" />
+        <div className="h-24 w-full bg-gray-200 rounded-lg skeleton-shimmer" />
+      </div>
+      <hr className="border-gray-200" />
+      <div className="h-4 w-32 bg-gray-200 rounded skeleton-shimmer" />
+      <div className="h-10 w-36 bg-gray-200 rounded-lg skeleton-shimmer" />
+    </div>
+  )
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg shadow p-6">
@@ -886,7 +1004,7 @@ function BlogForm({ post, onSaved, onCancel }: { post?: BlogPost | null; onSaved
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1">Author</label>
           <input type="text" value={form.author} onChange={e => setForm(p => ({ ...p, author: e.target.value }))}
-            placeholder="Wiggle Team"
+            placeholder="Affordable Hair and More Team"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-nude focus:border-transparent outline-none" />
         </div>
       </div>
@@ -1741,7 +1859,34 @@ export function AdminCustomizationPage() {
   )
 
   const renderItemList = () => {
-    if (loading) return <div className="text-center py-12 text-gray-600">Loading...</div>
+    if (loading) {
+      return (
+        <div className="space-y-4">
+          {/* Skeleton filter tabs */}
+          <div className="flex gap-2 mb-6 flex-wrap">
+            {['Hero Section', 'Featured Products', 'Reviews', 'Blog Posts', 'Video Library'].map((_, i) => (
+              <div key={i} className="h-10 w-28 bg-gray-200 rounded-lg skeleton-shimmer" />
+            ))}
+          </div>
+          {/* Skeleton content cards */}
+          <div className="space-y-3">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white rounded-lg shadow p-4 flex items-start gap-4">
+                <div className="w-24 h-16 rounded-lg bg-gray-200 flex-shrink-0 skeleton-shimmer" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-4 w-3/4 bg-gray-200 rounded skeleton-shimmer" />
+                  <div className="h-3 w-1/2 bg-gray-200 rounded skeleton-shimmer" />
+                  <div className="flex gap-3">
+                    <div className="h-5 w-16 bg-gray-200 rounded-full skeleton-shimmer" />
+                    <div className="h-5 w-14 bg-gray-200 rounded-full skeleton-shimmer" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
 
     if (activeTab === 'featured') {
       return (
