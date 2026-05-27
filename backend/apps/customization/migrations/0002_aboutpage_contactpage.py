@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='AboutPage',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(default='About Wiggle', max_length=255)),
+                ('title', models.CharField(default='About Affordable Hair and More', max_length=255)),
                 ('subtitle', models.TextField(blank=True, default='')),
                 ('story_title', models.CharField(blank=True, default='Our Story', max_length=255)),
                 ('story_content', models.TextField(blank=True, default='')),

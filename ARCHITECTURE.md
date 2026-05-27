@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the architectural decisions made during Phase 1 of the Wiggle e-commerce platform.
+This document outlines the architectural decisions made during Phase 1 of the Affordable Hair and More e-commerce platform.
 
 ---
 

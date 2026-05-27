@@ -236,7 +236,7 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-EMAIL_FROM = config('EMAIL_FROM', default='noreply@wiggle.com')
+EMAIL_FROM = config('EMAIL_FROM', default='noreply@affordablehairandmore.com')
 
 # SendGrid (alternative to SMTP — set EMAIL_BACKEND to 'sendgrid_backend.SendgridBackend')
 SENDGRID_API_KEY = config('SENDGRID_API_KEY', default='')

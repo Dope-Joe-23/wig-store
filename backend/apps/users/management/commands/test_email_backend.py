@@ -53,7 +53,7 @@ class Command(BaseCommand):
             self.stdout.write('\n[2/2] Sending test email...')
             
             send_mail(
-                subject='Test Email from Wiggle Backend',
+                subject='Test Email from Affordable Hair and More Backend',
                 message='This is a test email from the Django email backend.',
                 from_email=settings.EMAIL_FROM,
                 recipient_list=[recipient],

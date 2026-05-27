@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    """Extended user model for Wiggle platform"""
+    """Extended user model for Affordable Hair and More platform"""
     
     phone = models.CharField(max_length=20, blank=True, null=True)
     preferred_language = models.CharField(

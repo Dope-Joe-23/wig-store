@@ -7,13 +7,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: wiggle
-      POSTGRES_USER: wiggle_user
-      POSTGRES_PASSWORD: wiggle_pass
+      POSTGRES_DB: affordable_hair
+      POSTGRES_USER: affordable_hair_user
+      POSTGRES_PASSWORD: affordable_hair_pass
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wiggle_user -d wiggle"]
+      test: ["CMD-SHELL", "pg_isready -U affordable_hair_user -d affordable_hair"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -45,9 +45,9 @@ services:
       - .env
     environment:
       DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: wiggle
-      DB_USER: wiggle_user
-      DB_PASSWORD: wiggle_pass
+      DB_NAME: affordable_hair
+      DB_USER: affordable_hair_user
+      DB_PASSWORD: affordable_hair_pass
       DB_HOST: db
       DB_PORT: "5432"
       CELERY_BROKER_URL: redis://redis:6379/0

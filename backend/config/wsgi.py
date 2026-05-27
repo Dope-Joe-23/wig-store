@@ -1,5 +1,5 @@
 """
-WSGI config for Wiggle project.
+WSGI config for Affordable Hair and More project.
 """
 
 import os

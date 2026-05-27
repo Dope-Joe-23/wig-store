@@ -160,7 +160,7 @@ class Command(BaseCommand):
             {
                 'name': 'Amara Johnson',
                 'title': 'Fashion Influencer',
-                'quote': 'Wiggle transformed my confidence. The quality is unmatched — every wig feels like it was made just for me.',
+                'quote': 'Affordable Hair and More transformed my confidence. The quality is unmatched — every wig feels like it was made just for me.',
                 'rating': 5,
                 'media_type': 'image',
                 'media_url': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80',
@@ -180,7 +180,7 @@ class Command(BaseCommand):
             {
                 'name': 'Zara Williams',
                 'title': 'Hairstylist',
-                'quote': 'I recommend Wiggle to all my clients. Impeccable craftsmanship that rivals the best salons in the industry.',
+                'quote': 'I recommend Affordable Hair and More to all my clients. Impeccable craftsmanship that rivals the best salons in the industry.',
                 'rating': 5,
                 'media_type': 'image',
                 'media_url': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
@@ -222,7 +222,7 @@ class Command(BaseCommand):
                     'Proper care extends the life of your wig significantly. Use sulfate-free products, '
                     'store on a wig stand, and wash every 6-8 wears for optimal longevity.'
                 ),
-                'author': 'Wiggle Team',
+                'author': 'Affordable Hair and More Team',
                 'category': 'tips',
                 'cover_image_url': 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80',
                 'read_time': '8 min read',
@@ -281,7 +281,7 @@ class Command(BaseCommand):
                     'Replace the lace adhesive every 2-3 weeks. Clean the lace gently with alcohol wipes '
                     'to remove residue before reapplying.'
                 ),
-                'author': 'Wiggle Care Team',
+                'author': 'Affordable Hair and More Care Team',
                 'category': 'product',
                 'cover_image_url': 'https://images.unsplash.com/photo-1596728325488-58c87691e9af?w=800&q=80',
                 'read_time': '6 min read',
@@ -306,7 +306,7 @@ class Command(BaseCommand):
                     'special-edition packaging with a complimentary silk wig cap.\n\n'
                     'Visit our collection page to explore the full range and find your summer look.'
                 ),
-                'author': 'Wiggle Newsroom',
+                'author': 'Affordable Hair and More Newsroom',
                 'category': 'news',
                 'cover_image_url': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
                 'read_time': '3 min read',
@@ -335,7 +335,7 @@ class Command(BaseCommand):
                     'If your wig shifts when you move your head, leaves red marks on your forehead, '
                     'or feels tight enough to cause headaches, the size is wrong.'
                 ),
-                'author': 'Wiggle Team',
+                'author': 'Affordable Hair and More Team',
                 'category': 'tips',
                 'cover_image_url': 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=800&q=80',
                 'read_time': '4 min read',

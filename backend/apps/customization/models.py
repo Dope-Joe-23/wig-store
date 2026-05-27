@@ -172,7 +172,7 @@ class Testimonial(models.Model):
 class AboutPage(models.Model):
     """About page content - single configurable entry"""
     
-    title = models.CharField(max_length=255, default='About Wiggle')
+    title = models.CharField(max_length=255, default='About Affordable Hair and More')
     subtitle = models.TextField(blank=True, default='')
     
     # Story section

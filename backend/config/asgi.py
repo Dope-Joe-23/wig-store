@@ -1,5 +1,5 @@
 """
-ASGI config for Wiggle project.
+ASGI config for Affordable Hair and More project.
 """
 
 import os

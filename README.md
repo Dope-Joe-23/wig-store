@@ -1,4 +1,4 @@
-# Wiggle — Luxury Wig E-Commerce Platform
+# Affordable Hair and More — Wig & Beauty E-Commerce Platform
 
 A premium, mobile-first luxury wig and beauty commerce platform built with modern web technologies.
 
@@ -66,4 +66,4 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture decisions and
 
 ## License
 
-Proprietary — Wiggle 2024
+Proprietary — Affordable Hair and More 2024

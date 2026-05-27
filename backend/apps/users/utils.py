@@ -20,7 +20,7 @@ def send_otp_email(email: str, code: str, purpose: str = 'login') -> bool:
     Returns:
         True if email was sent successfully, False otherwise
     """
-    subject = 'Your Wiggle Verification Code'
+    subject = 'Your Affordable Hair and More Verification Code'
     purpose_label = 'Sign In' if purpose == 'login' else 'Email Verification'
     max_retries = 3
     initial_retry_delay = 5  # seconds
@@ -35,7 +35,7 @@ def send_otp_email(email: str, code: str, purpose: str = 'login') -> bool:
 
             send_mail(
                 subject=f'{subject} - {purpose_label}',
-                message=f'Your Wiggle verification code is: {code}\n\n'
+                message=f'Your Affordable Hair and More verification code is: {code}\n\n'
                         f'This code expires in 10 minutes.\n\n'
                         f'If you didn\'t request this, you can ignore this email.',
                 from_email=settings.EMAIL_FROM,
