@@ -9,6 +9,8 @@ from django.conf import settings
 from django.db import models, transaction
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from apps.products.models import Product
 from apps.orders.models import Order
@@ -22,7 +24,38 @@ class PaystackError(Exception):
 
 
 PAYSTACK_BASE_URL = 'https://api.paystack.co'
-PAYSTACK_TIMEOUT_SECONDS = 15
+PAYSTACK_TIMEOUT_SECONDS = 30  # increased to accommodate retries
+
+
+# Module-level persistent session for connection pooling across Paystack calls
+_paystack_session_instance: requests.Session | None = None
+
+
+def _paystack_session() -> requests.Session:
+    """Get or create a persistent requests session with exponential backoff retry logic.
+    Reuses the same connection pool across calls for efficiency.
+    """
+    global _paystack_session_instance
+
+    if _paystack_session_instance is not None:
+        return _paystack_session_instance
+
+    session = requests.Session()
+
+    retry_strategy = Retry(
+        total=3,
+        backoff_factor=2,  # sleep: 2s, 4s, 8s between retries
+        status_forcelist=[408, 429, 500, 502, 503, 504],
+        allowed_methods=['GET', 'POST'],
+        raise_on_status=False,
+    )
+
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount('https://', adapter)
+    session.mount('http://', adapter)
+
+    _paystack_session_instance = session
+    return session
 
 
 def generate_reference() -> str:
@@ -85,7 +118,8 @@ def initialize_transaction(*, order: Order, email: str, phone: str, amount: Deci
         },
     }
 
-    response = requests.post(
+    session = _paystack_session()
+    response = session.post(
         f'{PAYSTACK_BASE_URL}/transaction/initialize',
         json=payload,
         headers=paystack_headers(),
@@ -126,7 +160,8 @@ def initialize_transaction(*, order: Order, email: str, phone: str, amount: Deci
 
 
 def verify_transaction(reference: str) -> dict:
-    response = requests.get(
+    session = _paystack_session()
+    response = session.get(
         f'{PAYSTACK_BASE_URL}/transaction/verify/{reference}',
         headers=paystack_headers(),
         timeout=PAYSTACK_TIMEOUT_SECONDS,
